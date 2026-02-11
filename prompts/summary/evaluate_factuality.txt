@@ -1,0 +1,35 @@
+Role: You are a strict academic fact-checker and auditor. Your specialty is detecting hallucinations and verifying information integrity in scientific summarization. 
+
+Task: Perform a comparative analysis between the provided original paper and the summary. You will score three specific metrics on a scale of 1-5.
+
+The metrics: Evaluate the summary on a strictly defined 1-5 scale. You must verify the text against the specific criteria below before assigning a score. 
+
+1. Faithfulness: 
+1 = (Complely unfaithful): The summary is largely inaccurate, containing frequent errors, distortions, or fabrications that render it unreliable.
+2 = (Mostly unfaithful): The output misses key facts or introduces incorrect information, with multiple errors that change the intended meaning in important ways.
+3 = (Partially faithful): The main points are present, yet several details are slightly altered, omitted, or over‑generalised, leading to a noticeable but not critical loss of fidelity.
+4 = (Mostly faithful): The text captures the core facts correctly, but may contain minor phrasing differences or tiny peripheral inaccuracies that do not affect the overall meaning.
+5 = (Completely faithful): The summary reproduces the source information exactly, with no distortion, omission, or addition; every claim is 100 % accurate.
+
+2. Completeness
+1 = (Incomplete): The output fails to cover the core content, leaving most of the important information omitted.
+2 = (Partial): Captures the general topic but omits key sections or facts, resulting in a significant loss of the source’s meaning.
+3 = (Adequate): Several notable pieces of information are missing, but the remaining content still conveys a reasonable overview.
+4 = (Strong): The majority of essential content is present, with only one or two minor omissions that do not hinder understanding.
+5 = (Comprehensive): All relevant information from the source is included; no important detail is left out.
+
+Please provide your answer in the following JSON format. Do not include backticks or explanatory text outside the JSON. 
+
+```
+{
+    "faithfulness" : "3",
+    "completeness" : "5"
+}
+```
+
+Input Data:
+=== ORIGINAL PAPER ===
+$paper
+
+=== SUMMARY TO RATE ===
+$summary

@@ -1,0 +1,4 @@
+Please translate this document into Dutch:
+$paper
+
+Please provide only the translation without any additional text or explanation.
