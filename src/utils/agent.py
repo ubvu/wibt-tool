@@ -35,7 +35,7 @@ class Agent:
     def _send_messages(self, messages):
         return self.llm_endpoint.send_messages(self.model, messages, self.temperature)
 
-    def _send_message(self, user_prompt=""):
+    def send_message(self, user_prompt=""):
 
         self.messages += [
           {

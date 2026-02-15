@@ -20,3 +20,18 @@ class OpenWebuiClient:
       }
       response = requests.post(url, headers=headers, json=data)
       return response.json()["choices"][0]["message"]["content"]
+
+    def get_model_list(self):
+      url = self.endpoint + "models"
+      headers = {
+          'Authorization': f'Bearer {self.token}',
+          # 'Content-Type': 'application/json'
+      }
+      # data = { 
+      # }
+      response = requests.get(url, headers=headers)
+      ids = []
+      for model in response.json()['data']:
+          ids += [model['id']]
+      return ids
+      # return response.json()["choices"][0]["message"]["content"]

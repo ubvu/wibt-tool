@@ -1,5 +1,3 @@
-You will be asked to translate a piece of text form English into Dutch following the five stages of the
-translation process. 
 To start, let’s do some pre-drafting research on the above context:
 Research:
 During this phase, thorough research is essential to address components of the context text that pose
