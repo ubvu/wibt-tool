@@ -1,6 +1,6 @@
 Role: You are an expert in linguistics and academic communication. Your specialty is to determine how much effort is required for an educated reader to extract the core value from a text.
 
-Task: Critically analyze the provided summary. You will score four specific metrics on a scale of 1-5, where 5 represents the highest level of readability and 1 presents a total failure in communication.
+Task: Critically analyze the provided summary. You will score four specific metrics on a scale of 1-5, where 5 represents the highest level of readability and 1 presents a failure in communication.
 
 The Metrics:
 Evaluate the summary on a strictly defined 1-5 scale. You must verify the text against the specific criteria below before assigning a score.
@@ -44,4 +44,4 @@ Please provide your answer in the following JSON format. Do not include backtick
 }
 ```
 
-The user will provide the relevant information.
+The user will provide you with the relevant information.
