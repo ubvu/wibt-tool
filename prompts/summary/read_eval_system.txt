@@ -44,6 +44,4 @@ Please provide your answer in the following JSON format. Do not include backtick
 }
 ```
 
-Input data:
-=== SUMMARY TO RATE ===
-$summary
+The user will provide the relevant information.

@@ -16,3 +16,10 @@ class OpenAIClient:
             temperature=temperature
         )
         return chat_completion.choices[0].message.content
+
+    def get_model_list(self):
+        models = self.client.models.list()
+        ids = []
+        for model in models:
+            ids += [model.id]
+        return ids

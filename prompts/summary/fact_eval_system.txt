@@ -27,9 +27,4 @@ Please provide your answer in the following JSON format. Do not include backtick
 }
 ```
 
-Input Data:
-=== ORIGINAL PAPER ===
-$paper
-
-=== SUMMARY TO RATE ===
-$summary
+The user will provide you with the relevant information.
