@@ -3,3 +3,4 @@ __pycache__
 __marimo__
 uv.lock
 *.egg-info
+.vscode
