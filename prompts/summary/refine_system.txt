@@ -22,18 +22,4 @@ Please provide your anwer in JSON format as follows (without the backticks):
 }
 ```
 
-Input Data:
-=== ORIGINAL PROMPT ===
-```
-$prompt
-```
-
-=== READABILITY REPORT ===
-$clarity
-$jargon
-$density
-$cohesion
-
-=== FACTUALITY REPORT ===
-$faithfulness
-$completeness
+The user will provide you with the relevant information.

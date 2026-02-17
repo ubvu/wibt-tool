@@ -12,12 +12,12 @@ load_dotenv()
 
 default_api = os.environ.get('DEFAULT_API')
 
-if default_api == "open_webui":
+if default_api == "OpenWebUI":
     # load in token needed to connect to Nebula
     token = os.environ.get('OPEN_WEBUI_TOKEN')
     url = os.environ.get('OPEN_WEBUI_URL')
     llm_endpoint = OpenWebuiClient(token, url)
-elif default_api == "openai":
+elif default_api == "OpenAI":
     # use an OpenAI endpoint instead
     token = os.environ.get('OPEN_AI_TOKEN')
     url = os.environ.get('OPEN_AI_URL')
