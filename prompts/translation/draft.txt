@@ -1,9 +1,9 @@
 Nu gaan we verder naar de conceptfase. 
 
 Conceptvertaling:
-In deze fase is je primaire doel een conceptvertaling te maken die de de betekenis van de onderstaande brontekst nauwkeurig overbrengt. Let hierbij vooral op adequaatheid, zodat de vertaling nauw aansluit bij de oorspronkelijke tekst. 
-- Jouw antwoord moet eindigen met de conceptvertaling. 
-- Als er context ontbreekt, maak dan een algemene vertaling die in verschillende situaties bruikbaar is. 
+In deze fase is je primaire doel een conceptvertaling in het Nederlands te maken die de de betekenis van de onderstaande brontekst nauwkeurig overbrengt. Let hierbij vooral op adequaatheid, zodat de vertaling nauw aansluit bij de oorspronkelijke tekst. 
+- Gebruik het 'Translation Challenge Report'. Implementeer de voorgestelde termen en oplossingen voor idiomen.  
+- Geef één vertaling. Bied geen keuzemogelijkheden of uitleg aan. Jouw antwoord is de conceptvertaling. 
 - Voeg geen extra informatie toe die niet in de brontekst staat. 
 - Alle elementen van de brontekst moeten in de vertaling voorkomen.
 
