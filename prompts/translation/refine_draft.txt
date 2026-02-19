@@ -1,4 +1,6 @@
-Now let’s move to the next stage.
-Post-editing with local refinement
+Nu gaan we verder naar de volgende fase.
 
-In this stage, the primary aim is to refine the draft translation by making micro-level improvements that improve the draft’s fluency. Provide only one refined translation and do not output anything else after that.
+Nabewerking met lokale verfijning:
+In deze fase is het primaire doel het verfijnen van de conceptvertaling. Breng kleine, gerichte verbeteringen aan om de vloeiendheid van de tekst te verhogen.
+
+Lever slechts één verfijnde vertaling, geef geen andere output weer.

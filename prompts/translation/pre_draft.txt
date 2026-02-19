@@ -1,10 +1,10 @@
-To start, let’s do some pre-drafting research on the above context:
-Research:
-During this phase, thorough research is essential to address components of the context text that pose translation challenges. The goal is to establish a comprehensive translation plan that covers the following category:
+Allereerst doen we een pre-concept onderzoek op de gegeven context. 
 
-* Idiomatic Expressions:
-* Identify idiomatic expressions that cannot be directly translated word-for-word into Dutch
+Onderzoek:
+In deze fase is grondig onderzoek essentieel om de elementen in de tekst die vertaalproblemen kunnen veroorzaken te identificeren. Het doel is om een uitgebreid vertaalplan op te stellen, met speciale aandacht voor de volgende categorie:
+- Idiomatische uitdrukkingen:
+Zoek idiomen die niet woord-voor-woord naar het Nederlands kunnen worden vertaald en noteer ze.
 
-Here is the context in which the text appears:
-Context: 
+De context waarin deze analyse moet worden toegepast staat hieronder:
+Context:
 $paper

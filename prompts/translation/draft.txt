@@ -1,7 +1,12 @@
-Now, let’s move on to the drafting stage.
-Draft Translation:
-In this phase, your primary objective is to create a draft translation that accurately conveys the meaning of the source text presented below. At this stage, it is crucial to focus on adequacy, ensuring that your translation closely adheres to the source text. Your response should conclude with the draft translation. If context is missing, generate a general translation that is adaptable to various contexts. Avoid adding any additional information not present in the source text. All elements of the source text should be present in the translation.
+Nu gaan we verder naar de conceptfase. 
 
-Give your best one translation for the following piece of text based on the pre-drafting analysis without providing alternatives:
-English: 
+Conceptvertaling:
+In deze fase is je primaire doel een conceptvertaling te maken die de de betekenis van de onderstaande brontekst nauwkeurig overbrengt. Let hierbij vooral op adequaatheid, zodat de vertaling nauw aansluit bij de oorspronkelijke tekst. 
+- Jouw antwoord moet eindigen met de conceptvertaling. 
+- Als er context ontbreekt, maak dan een algemene vertaling die in verschillende situaties bruikbaar is. 
+- Voeg geen extra informatie toe die niet in de brontekst staat. 
+- Alle elementen van de brontekst moeten in de vertaling voorkomen.
+
+Geef één definitieve vertaling van de volgende tekst, gebaseerd op de voorafgaande pre-conceptanalyse, zonder alternatieven aan te bieden:
+English:
 $paper

@@ -4,3 +4,4 @@ __marimo__
 uv.lock
 *.egg-info
 .vscode
+.DS_Store

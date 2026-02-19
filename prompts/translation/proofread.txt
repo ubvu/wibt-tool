@@ -1,8 +1,8 @@
-Source Text
+Brontekst
 $paper
 
-Draft Translation
+Conceptvertaling
 $draft
 
-Refined Translation
+Verfijnde vertaling
 $refined_draft
