@@ -11,7 +11,6 @@ class Agent:
         self.set_system_prompt(system_prompt)
         self.temperature = temperature
         self.history = history
- 
 
 
     def set_model(self, model):
@@ -64,6 +63,8 @@ class Agent:
         return response
 
 
+    def get_messages(self):
+        return self.messages
 
 class SummaryAgent(Agent):
     def generate_summary(self, paper):
@@ -152,3 +153,4 @@ class DirectTranslationAgent(Agent):
     def translate(self, paper):
         return self._send_message(Template(self.translation_prompt).substitute(paper=paper))
 
+# lightllm proxy agents
