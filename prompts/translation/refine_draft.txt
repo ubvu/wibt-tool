@@ -1,6 +1,7 @@
 Nu gaan we verder naar de volgende fase.
 
 Nabewerking met lokale verfijning:
-In deze fase is het primaire doel het verfijnen van de conceptvertaling. Breng kleine, gerichte verbeteringen aan om de vloeiendheid van de tekst te verhogen.
+In deze fase is het primaire doel het verfijnen van de conceptvertaling. Breng kleine, gerichte verbeteringen aan voor een natuurlijk vloeiende Nederlandse tekst. 
+- Pas zinconstructies aan die technisch correct zijn, maar onnatuurlijk aanvoelen. Zorg dat de tekst leest alsof deze oorspronkelijk in het Nederlands is geschreven.
 
 Lever slechts één verfijnde vertaling, geef geen andere output weer.

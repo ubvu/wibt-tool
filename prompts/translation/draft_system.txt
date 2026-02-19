@@ -1,3 +1,5 @@
-Je gaat een stuk tekst vertalen van het Engels naar het Nederlands volgens de vier fasen van het vertaalproces. 
+You will be asked to translate a piece of text from English into Dutch following the four stages of the translation process.
 
-De gebruiker zal je vragen om deze stappen uit te voeren.  
+The user will ask you to perform these steps.
+
+
