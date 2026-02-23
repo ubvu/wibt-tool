@@ -6,7 +6,10 @@ dependencies = [
   "dotenv",
   "requests",
   "openai",
-  "marimo"
+  "marimo",
+  "altair",
+  "pandas",
+  "pyarrow"
 ]
 
 [tool.marimo.runtime]

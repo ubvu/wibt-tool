@@ -7,7 +7,6 @@ with app.setup:
     import marimo as mo
 
 
-
 @app.cell
 def _():
     input_text_file = mo.ui.file(kind="area", filetypes=[".md", ".pdf"], multiple=False)
@@ -30,9 +29,9 @@ def _(input_text_file):
 def _(paper):
     _output = None
     if paper:
-        _output = mo.callout(
+        _output = mo.accordion( {'Selected file' : mo.callout(
             value=mo.md(f"{paper}"),
-            kind="neutral")
+            kind="neutral")}) 
     _output
     return
 
