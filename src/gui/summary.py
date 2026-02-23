@@ -51,10 +51,10 @@ def _(endpoint_component):
 
 @app.cell
 def _():
-    with open("prompts/summary/summary_system.txt", "r") as file:
+    with open("prompts/summary/summarize/summary_system_psychology.txt", "r") as file:
         summary_system_prompt_file = file.read()
 
-    with open("prompts/summary/summarize.txt", "r") as file:
+    with open("prompts/summary/summarize/summarize.txt", "r") as file:
         summarize_prompt_file = file.read()
 
     with open("prompts/summary/refine_system.txt", "r") as file:
@@ -63,16 +63,16 @@ def _():
     with open("prompts/summary/refine.txt", "r") as file:
         refine_prompt_file = file.read()
 
-    with open("prompts/summary/read_eval_system.txt", "r") as file:
+    with open("prompts/summary/readability/read_eval_system_psychology.txt", "r") as file:
         read_eval_system_prompt_file = file.read()
 
-    with open("prompts/summary/read_eval.txt", "r") as file:
+    with open("prompts/summary/readability/read_eval.txt", "r") as file:
         read_eval_prompt_file = file.read()
 
-    with open("prompts/summary/fact_eval_system.txt", "r") as file:
+    with open("prompts/summary/factuality/fact_eval_system.txt", "r") as file:
         fact_eval_system_prompt_file = file.read()
 
-    with open("prompts/summary/fact_eval.txt", "r") as file:
+    with open("prompts/summary/factuality/fact_eval.txt", "r") as file:
         fact_eval_prompt_file = file.read()
     return (
         fact_eval_prompt_file,
