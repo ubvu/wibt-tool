@@ -15,6 +15,7 @@ Factuality:
 
 Return only the refined prompt text. Do not include any introductory text. Start the response directly with the prompt content.
 Please provide your anwer in JSON format as follows (without the backticks):
+Make sure to write correct json. In particular, newlines are written as \n in json files.
 
 ```
 {
