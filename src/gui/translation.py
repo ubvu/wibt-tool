@@ -29,26 +29,6 @@ def _():
 
 @app.cell
 async def _():
-    # agents = [
-    #     {
-    #         'name' : 'Draft',
-    #         'prompts' : {
-    #             'system' : '',
-    #             'pre-draft' : '',
-    #             'draft' : '',
-    #             'refined_draft' : ''
-    #         },
-    #         'temp' : 0
-    #     },
-    #     {
-    #         'name' : 'Proofread',
-    #         'prompts' : {
-    #             'system' : '',
-    #             'proofread' : ''
-    #         },
-    #         'temp' : 0
-    #     }
-    # ]
     endpoint_component = await endpoint_module.embed()
     endpoint_component.output
     return (endpoint_component,)
