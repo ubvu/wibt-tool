@@ -1,0 +1,10 @@
+Psychology!
+
+Brontekst
+$paper
+
+Conceptvertaling
+$draft
+
+Verfijnde vertaling
+$refined_draft

@@ -41,71 +41,36 @@ def _(endpoint_component):
 
 
 @app.cell
-def _():
-    with open("prompts/translation/draft_system.txt", "r") as file:
-        draft_system_prompt_file = file.read()
-    with open("prompts/translation/pre_draft.txt", "r") as file:
-        pre_draft_prompt_file = file.read()
-    with open("prompts/translation/draft.txt", "r") as file:
-        draft_prompt_file = file.read()
-    with open("prompts/translation/refine_draft.txt", "r") as file:
-        refine_prompt_file = file.read()
-    with open("prompts/translation/proofread_system.txt", "r") as file:
-        proofread_system_prompt_file = file.read()
-    with open("prompts/translation/proofread.txt", "r") as file:
-        proofread_prompt_file = file.read()
-    return (
-        draft_prompt_file,
-        draft_system_prompt_file,
-        pre_draft_prompt_file,
-        proofread_prompt_file,
-        proofread_system_prompt_file,
-        refine_prompt_file,
-    )
-
-
-@app.cell
-def _():
-    return
-
-
-@app.cell
-async def _(
-    draft_prompt_file,
-    draft_system_prompt_file,
-    llm_endpoint,
-    pre_draft_prompt_file,
-    proofread_prompt_file,
-    proofread_system_prompt_file,
-    refine_prompt_file,
-):
+async def _(llm_endpoint):
     _agents = [
         {
             'name' : 'Draft',
-            'prompts' : {
-                'system' : draft_system_prompt_file,
-                'pre-draft' : pre_draft_prompt_file,
-                'draft' : draft_prompt_file,
-                'refined_draft' : refine_prompt_file
+            'prompts_file_name' : {
+                'system' : "draft_system.txt",
+                'pre-draft' : "pre_draft.txt",
+                'draft' : "draft.txt",
+                'refined_draft' : "refine_draft.txt"
             },
             'temp' : 0
         },
         {
             'name' : 'Proofread',
-            'prompts' : {
-                'system' : proofread_system_prompt_file,
-                'proofread' : proofread_prompt_file
+            'prompts_file_name' : {
+                'system' : "proofread_system.txt",
+                'proofread' : "proofread.txt"
             },
             'temp' : 0
         }
     ]
     _models = llm_endpoint.get_model_list()
     _default_model = os.environ.get('DEFAULT_MODEL') if os.environ.get('DEFAULT_MODEL') in _models else _models[0]
+    _prompt_path_base = "prompts/translation"
 
     agent_component = await agent_settings_module.embed({
         'models' : _models,
         'agents' : _agents,
-        'default_model' : _default_model
+        'default_model' : _default_model,
+        'prompt_path_base': _prompt_path_base,
     })
     agent_component.output
     return (agent_component,)

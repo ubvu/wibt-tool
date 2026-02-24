@@ -1,0 +1,5 @@
+Psychology!
+
+Input data:
+=== SUMMARY TO RATE ===
+$summary
