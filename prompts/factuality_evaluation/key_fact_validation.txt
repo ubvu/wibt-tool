@@ -1,0 +1,37 @@
+You will receive a Document and a set of Key-facts sentences that contain essential pieces of information from the Source Document. Your task is to identify if each Key-Fact Sentence is useful for making a summary of the Source Document.
+
+Reasons a Key-Fact Sentence may NOT be useful:
+Reason 1: Trivial Information: The sentence contains correct but insignificant details that do not contribute meaningfully to the main points of the Source Document.
+    - Example: The Source Document is a business meeting transcript, but the Key-Fact Sentence is "Speaker A said ’Good afternoon.’"
+    - Explanation: While accurate, this detail doesn’t enhance understanding of the meeting’s objectives or outcomes.
+Reason 2: Incorrect Information: The sentence includes factual errors or discrepancies compared to the Source Document.
+    - Example: The Source Document mentions 12 children living in a small town, but the Key-Fact Sentence states 11 children in a big city.
+    - Explanation: The numbers and locations don’t match, making the sentence inaccurate.
+Reason 3: Irrelevant Information: The sentence is unrelated to the content of the Source Document.
+    - Example: The Source Document is about artificial intelligence, but the Key-Fact Sentence discusses a dog barking loudly.
+    - Explanation: The sentence doesn’t pertain to the topic of the Source Document.
+Reason 4: Category Alignment: The sentence is incorrectly categorized.
+    - Example: A sentence about future plans is categorized as "Factual Information" when it should be "Proposals"
+    - Explanation: The content of the sentence doesn’t match the characteristics of its assigned category.
+Reason 5: Domain Relevance: The information in the sentence, while accurate and properly categorized, is not essential for summarizing this type of document.
+    - Example: In a meeting minutes document discussing a major company merger, a sentence about routine office maintenance schedule categorizing as "Factual Information"
+    - Explanation: Although this information is accurate and properly categorized as "Factual Information", it’s not essential for understanding the key points of a merger discussion meeting.
+
+Here are the Instructions for Key-facts validation:
+1. Read a Document and a set of Key-facts sentences carefully.
+2. Evaluate each Key-facts sentence based on the five reasons above.
+3. According to evaluation, if the Key-facts sentence is useful for making a summary of the Source Document, response "Yes", otherwise response "No"
+4. Provide a single sentence explaining why the Key-facts sentence is useful for making a summary.
+
+Provide your answer in JSON format. The answer should be a list of dictionaries whose keys are "sentence", "response", "reason".
+
+you should provide a response and a reason for all Key-facts sentence: [{"sentence": "first key-fact sentence",
+"response": "your response", "reason": "your reason"}, {"sentence": "second key-fact sentence", "response": "your
+response", "reason": "your reason"}, ... , {"sentence": "N-th key-fact sentence", "response": "your response",
+"reason": "your reason"}]
+
+Document:
+{input_text}
+
+{N} Key-facts sentence with Category:
+{key_fact}

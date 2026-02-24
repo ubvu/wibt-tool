@@ -1,0 +1,253 @@
+Your task is to identify domain-specific key facts within the document in <document></document>, which are essential pieces of information for a high-quality summary. You are provided key-fact category and description in <category></category> tags, and its example in <example></example>. Each key fact must be presented as a standalone, atomic-level sentence. The following is a set of detailed instructions in <instructions></instructions> tags for identifying key facts.
+
+<instructions>
+1. Identify Key-facts: Extract all key-facts from the text. Each key-fact should:
+    - Be a complete sentence with a subject, verb, and object/complement.
+    - Contain only one action, event, or idea. Avoid compound sentences.
+    - Include no more than two or three entities per key fact. If there are more than three entities, divide them into separate sentences.
+    - Present temporal information (e.g., when, how long) as standalone sentences.
+    - Present causal relationships (e.g., reasons, consequences) as standalone sentences.
+    - Avoid using linking words like ’and,’ ’but,’ ’then,’ or ’because.’ Each idea must be presented as an independent fact.
+    - Do not combine related details, even implicitly. Each sentence must describe exactly one action, idea, or relationship.
+2. Here are the examples of key-fact structure granularity:
+    - Text Example: The resolution authorizes the operation of one winter shelter from December 1st, 2019, to March 31st, 2020.
+    - Key-facts (Revised):
+        (a) The resolution authorizes the operation of one winter shelter.
+        (b) The winter shelter will operate from December 1st, 2019, to March 31st, 2020.
+    - Text Example : The property for the winter shelter was purchased using homeless emergency aid program funding.
+    - Key-facts (Revised):
+        (a) The property for the winter shelter was purchased.
+        (b) Homeless emergency aid program funding was used for the purchase.
+3. Categorize Key-facts:
+    - Define your own categories for the key-facts based on content.
+    - Assign each key-fact to a category.
+4. Compare Categories:
+    - Compare your defined categories with the provided key-fact categories.
+    - Adjust any key-fact to better align with the provided categories.
+5. Validate Key-facts
+    - Ensure each key-fact meets the following criteria:
+        - Correctly categorized.
+        - Atomicity: Conveys only one action, event, or idea.
+        - Clarity: Is concise and clear, avoiding ambiguity.
+        - Brevity: Contains no unnecessary details.
+        - Non-overlapping: Does not duplicate information in other facts.
+    - Finalize key facts that satisfy these conditions.
+</instructions>
+
+<category><example>
+Here are the provided Key Fact Categories and Descriptions:
+[
+  {
+    "Domain": "News",
+    "Category": "Main Topic",
+    "Description": "General information about the primary event, issue, or occurrence being discussed",
+    "Example": "Prince William is scheduled at the Cenotaph."
+  },
+  {
+    "Domain": "News",
+    "Category": "Background",
+    "Description": "Situational details supporting the main topic",
+    "Example": "Guy Thorpe-Beeston has 18 years' experience."
+  },
+  {
+    "Domain": "News",
+    "Category": "Immediate Impact",
+    "Description": "Short-term effects or consequences resulting from the main topic",
+    "Example": "William will travel by car, not helicopter."
+  },
+  {
+    "Domain": "News",
+    "Category": "Future Implications",
+    "Description": "Long-term outcomes or projected developments related to the main topic",
+    "Example": "The delivery room at St Mary's Lindo Wing will have a new team."
+  },
+  {
+    "Domain": "News",
+    "Category": "Public statements",
+    "Description": "Non-expert perspectives, opinions, or reactions from the general public",
+    "Example": "Prosecutor Brice Robin confirmed no videos were used."
+  },
+  {
+    "Domain": "News",
+    "Category": "Official statements",
+    "Description": "Expert or authoritative opinions, assessments, or analysis on the main topic",
+    "Example": "Obstetrician Guy Thorpe-Beeston will lead the birth."
+  },
+  {
+    "Domain": "News",
+    "Category": "Counterarguments",
+    "Description": "Critiques or opposition to the main topic or its impacts",
+    "Example": "Prince William faces a conflict between duties and his child's birth."
+  },
+  {
+    "Domain": "Medical Literature",
+    "Category": "Research Finding",
+    "Description": "Key discoveries or outcomes from medical research studies",
+    "Example": "Intervention strategies have helped reduce malaria globally."
+  },
+  {
+    "Domain": "Medical Literature",
+    "Category": "Medical experiments",
+    "Description": "Detailed procedures, methodologies, and designs of experiments or clinical trials testing treatments or interventions",
+    "Example": "New mapping techniques track malaria transmission."
+  },
+  {
+    "Domain": "Medical Literature",
+    "Category": "Disease descriptions",
+    "Description": "Detailed explanations of diseases, including symptoms, causes, and characteristics",
+    "Example": "Dengue is caused by four viruses (DENV 1-4)."
+  },
+  {
+    "Domain": "Medical Literature",
+    "Category": "Medical Treatment",
+    "Description": "Recommended therapies, treatments, and interventions aimed at managing or curing diseases",
+    "Example": "Dengue treatment involves haematological monitoring."
+  },
+  {
+    "Domain": "Medical Literature",
+    "Category": "Medical Prevention",
+    "Description": "Strategies and actions aimed at preventing diseases and promoting public health",
+    "Example": "Insecticide-treated bednets have been key to malaria control."
+  },
+  {
+    "Domain": "Report",
+    "Category": "Recommendations",
+    "Description": "Suggested actions or improvements based on report findings",
+    "Example": "HHS agreed to gather more disenrollment data."
+  },
+  {
+    "Domain": "Report",
+    "Category": "Governance",
+    "Description": "Oversight and administration of programs and resources",
+    "Example": "CMS reviews aspects of contracts between states and D-SNPs."
+  },
+  {
+    "Domain": "Report",
+    "Category": "Regulation and Policy",
+    "Description": "Legal frameworks, standards, and policies guiding operations",
+    "Example": "Dual-eligible beneficiaries qualify for Medicare and Medicaid."
+  },
+  {
+    "Domain": "Report",
+    "Category": "Evaluations",
+    "Description": "Assessment of data and review of program performance",
+    "Example": "CMS lacks data on disenrolled beneficiaries."
+  },
+  {
+    "Domain": "Report",
+    "Category": "Financial information",
+    "Description": "Details about costs, budget allocations, and financial impacts",
+    "Example": "Medicaid covers premiums for dual-eligible beneficiaries."
+  },
+  {
+    "Domain": "Booking",
+    "Category": "General Information",
+    "Description": "Reference numbers, contact info, headcounts, or else excluding time, location, and price",
+    "Example": "The train ticket number is 12345."
+  },
+  {
+    "Domain": "Booking",
+    "Category": "Price and Payment",
+    "Description": "Cost, pricing, fees and payment methods",
+    "Example": "The total cost for the train ticket is $45."
+  },
+  {
+    "Domain": "Booking",
+    "Category": "Time and Schedule",
+    "Description": "Time slots, schedules, and booking times",
+    "Example": "The restaurant is available from 6 PM to 9 PM."
+  },
+  {
+    "Domain": "Booking",
+    "Category": "Location and Route",
+    "Description": "Address, location and routes",
+    "Example": "The Grand Hotel is at 123 Kings Road, Brighton, BN1 2GS."
+  },
+  {
+    "Domain": "Booking",
+    "Category": "Booking Confirmation",
+    "Description": "Confirmation and status of bookings for the services",
+    "Example": "A table for 8 is booked."
+  },
+  {
+    "Domain": "Booking",
+    "Category": "User Requests",
+    "Description": "User's requests for the booking service or details",
+    "Example": "The user wants to book a hotel room for two people."
+  },
+  {
+    "Domain": "Booking",
+    "Category": "System Suggestions",
+    "Description": "Suggestions provided by the system.",
+    "Example": "The system recommends taking a train to Cambridge."
+  },
+  {
+    "Domain": "Meeting",
+    "Category": "Opinions",
+    "Description": "Personal viewpoints, perspectives, or feelings regarding a topic or proposal",
+    "Example": "Dave Shukla argues consolidation increases expenses."
+  },
+  {
+    "Domain": "Meeting",
+    "Category": "Decisions",
+    "Description": "specific, actionable plans or choices made to address a Problem or improve a situation after careful consideration",
+    "Example": "The council decided to consolidate gas under one commission."
+  },
+  {
+    "Domain": "Meeting",
+    "Category": "Proposals",
+    "Description": "Final conclusion or choice made after discussion, determining the course of action",
+    "Example": "Dave Shukla proposes keeping utilities independent."
+  },
+  {
+    "Domain": "Meeting",
+    "Category": "Reports",
+    "Description": "Structured updates or presentations summarizing status, data, or findings related to projects or objectives",
+    "Example": "The goal is to create one commission for cost savings."
+  },
+  {
+    "Domain": "Meeting",
+    "Category": "Factual Information",
+    "Description": "Objective data, statistics, or verified information that serves as a basis for decisions or discussions",
+    "Example": "Reid concludes the party's divisiveness cost them control."
+  },
+  {
+    "Domain": "Interview",
+    "Category": "Background",
+    "Description": "Context or historical info to help understanding",
+    "Example": "The discussion covers Obama's State of the Union."
+  },
+  {
+    "Domain": "Interview",
+    "Category": "Main Arguments",
+    "Description": "Core claims or opinions from each speaker",
+    "Example": "Cary says establishment Republicans struggle against Trump."
+  },
+  {
+    "Domain": "Interview",
+    "Category": "Supporting Examples",
+    "Description": "Examples, data, or statistics to support the main arguments",
+    "Example": "Cary cites Republican grassroots efforts in early states."
+  },
+  {
+    "Domain": "Interview",
+    "Category": "Counterarguments",
+    "Description": "Opposing views or criticisms of the main arguments and responses",
+    "Example": "Cary defends the Republican Party, claiming not all are hateful."
+  },
+  {
+    "Domain": "Interview",
+    "Category": "Conclusions",
+    "Description": "Key points and future directions from the interview",
+    "Example": "Reid concludes the party's divisiveness cost them control."
+  }
+]
+</category></example>
+
+Provide your answer in JSON format. The answer should be a dictionary with tuples:
+’key_facts’ containing the key facts as a list of tuples (keyfact, reason, category):
+{"key_facts": [ ("first key fact", "reason", "category"), ("second key fact", "reason", "category") ]}
+
+<document>
+{input_text}
+</document>

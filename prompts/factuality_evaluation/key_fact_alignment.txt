@@ -1,0 +1,28 @@
+You will be provided with two sets of information: 
+    - List of sentences A: A list of sentences that need to be evaluated. 
+    - sentence B: A sentence that will be checked against sentence A. 
+
+Your task is to evaluate whether the complete information in each sentence from List A is fully contained in sentence B. This requires performing n evaluations (where n is the number of sentences in List A). For example, if there are 15 sentences in List A, you have to do 15 evaluations. 
+
+Instruction:
+    - A sentence from List A is considered "contained" in the sentence B if and only if: 
+        1. The complete information conveyed by the sentence in List A is entirely present in the sentence B. 
+        2. The essential meaning of the sentence in List A must align with or be fully and explicitly captured by sentence B. 
+        3. The information conveyed by the sentence in List A must be explicitly implied or fully understood by sentence B. 
+    Exact wording is not required, but the complete and explicit meaning must match. 
+    Provide a short reason, and a label: contained, not contained. 
+
+Please provide your answer in JSON format: [{"sentence A": "1", "label": "contained", "reason": "Short explanation of why you chose this label"}, {"sentence A": "sentence A number", "label": "contained or not contained", "reason": "Short explanation of why you chose this label"}, ..., {"sentence A": "N", "label": "not contained", "reason": "Short explanation of why you chose this label"}] 
+
+Note: 
+    - Ensure that all n evaluations are performed without omission. Each combination of a sentence from List A and the sentence B must be explicitly evaluated. 
+    - Any skipped or missing evaluations will result in incomplete analysis, so please confirm that no sentence in List A is overlooked. 
+    - Clearly explain your reasoning even if the label is "not contained." 
+    - Ensure your evaluation strictly adheres to the requirement that the entire meaning of the sentence in List A should be fully present in sentence B to be labeled as "contained." 
+    - Criteria recap: contained, not contained 
+
+List of sentences A: 
+{key-fact} 
+
+Sentence B: 
+{summary}

@@ -1,0 +1,15 @@
+Input Data:
+=== ORIGINAL PROMPT ===
+```
+$prompt
+```
+
+=== READABILITY REPORT ===
+$clarity
+$jargon
+$density
+$cohesion
+
+=== FACTUALITY REPORT ===
+$faithfulness
+$completeness
