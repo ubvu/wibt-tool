@@ -50,95 +50,51 @@ def _(endpoint_component):
 
 
 @app.cell
-def _():
-    with open("prompts/summary/summary_system.txt", "r") as file:
-        summary_system_prompt_file = file.read()
-
-    with open("prompts/summary/summarize.txt", "r") as file:
-        summarize_prompt_file = file.read()
-
-    with open("prompts/summary/refine_system.txt", "r") as file:
-        refine_system_prompt_file = file.read()
-
-    with open("prompts/summary/refine.txt", "r") as file:
-        refine_prompt_file = file.read()
-
-    with open("prompts/summary/read_eval_system.txt", "r") as file:
-        read_eval_system_prompt_file = file.read()
-
-    with open("prompts/summary/read_eval.txt", "r") as file:
-        read_eval_prompt_file = file.read()
-
-    with open("prompts/summary/fact_eval_system.txt", "r") as file:
-        fact_eval_system_prompt_file = file.read()
-
-    with open("prompts/summary/fact_eval.txt", "r") as file:
-        fact_eval_prompt_file = file.read()
-    return (
-        fact_eval_prompt_file,
-        fact_eval_system_prompt_file,
-        read_eval_prompt_file,
-        read_eval_system_prompt_file,
-        refine_prompt_file,
-        refine_system_prompt_file,
-        summarize_prompt_file,
-        summary_system_prompt_file,
-    )
-
-
-@app.cell
-async def _(
-    fact_eval_prompt_file,
-    fact_eval_system_prompt_file,
-    llm_endpoint,
-    read_eval_prompt_file,
-    read_eval_system_prompt_file,
-    refine_prompt_file,
-    refine_system_prompt_file,
-    summarize_prompt_file,
-    summary_system_prompt_file,
-):
+async def _(llm_endpoint):
     _agents = [
         {
             'name' : 'Summary',
-            'prompts' : {
-                'system' : summary_system_prompt_file,
-                'summarize' : summarize_prompt_file
+            'prompts_file_name' : {
+                'system' : "summary_system.txt",
+                'summarize' : "summarize.txt"
             },
             'temp' : 0
         },
         {
             'name' : 'Refinement',
-            'prompts' : {
-                'system' : refine_system_prompt_file,
-                'refine' : refine_prompt_file
+            'prompts_file_name' : {
+                'system' : "refine_system.txt",
+                'refine' : "refine.txt"
             },
             'temp' : 1
         },
         {
             'name' : 'Read eval',
-            'prompts' : {
-                'system' : read_eval_system_prompt_file,
-                'evaluate' : read_eval_prompt_file
+            'prompts_file_name' : {
+                'system' : "read_eval_system.txt",
+                'evaluate' : "read_eval.txt"
             },
             'temp' : 0
         },
         {
             'name' : 'Fact eval',
-            'prompts' : {
-                'system' : fact_eval_system_prompt_file,
-                'evaluate' : fact_eval_prompt_file
+            'prompts_file_name' : {
+                'system' : "fact_eval_system.txt",
+                'evaluate' : "fact_eval.txt"
             },
             'temp' : 0
         }
     ]
     _models = llm_endpoint.get_model_list()
     _default_model = os.environ.get('DEFAULT_MODEL') if os.environ.get('DEFAULT_MODEL') in _models else _models[0]
+    _prompt_path_base = "prompts/summary"
+
 
     agent_component = await agent_settings_module.embed({
         'models' : _models,
         'agents' : _agents,
-        'default_model' : _default_model
+        'default_model' : _default_model,
+        'prompt_path_base': _prompt_path_base, 
     })
     agent_component.output
     return (agent_component,)
@@ -256,6 +212,9 @@ def _(
         summary = summary_agent.send_message(Template(summarize_prompt).substitute(paper=paper))
         readability_eval_agent.clear_messages()
         readability_scores = extract_json(readability_eval_agent.send_message(Template(read_eval_prompt).substitute(summary=summary)))
+        while readability_scores is None:
+            print(f"The scores: {readability_scores}")
+            readability_scores = extract_json(readability_eval_agent.send_message("Dear friend,\nI was unable to read the json. Did you stick to the template provided in the system prompt?"))
         clarity = int(readability_scores['Syntactic clarity'])
         jargon = int(readability_scores['Jargon'])
         density = int(readability_scores['Information density'])
@@ -264,6 +223,9 @@ def _(
         readability_score = int(clarity + jargon + density + cohesion)
         factuality_eval_agent.clear_messages()
         factuality_scores = extract_json(factuality_eval_agent.send_message(Template(fact_eval_prompt).substitute(paper=paper, summary=summary)))
+        while factuality_scores is None:
+            factuality_scores = extract_json(factuality_eval_agent.send_message("Dear friend,\nI was unable to read the json. Did you stick to the template provided in the system prompt?"))
+        
         faithfulness = int(factuality_scores['faithfulness'])
         completeness = int(factuality_scores['completeness'])
 
@@ -456,11 +418,11 @@ def _(get_prompts, prompts):
         _df = pd.DataFrame(data=_prompts)
 
         _data = _df.melt('iteration', ['total_score', 'readability_score', 'factuality_score', 'clarity', 'jargon', 'density', 'cohesion', 'faithfulness', 'completeness'])
-        _output = alt.Chart(_data).mark_line().encode(
+        _output = mo.ui.altair_chart(alt.Chart(_data).mark_line().encode(
             x='iteration',
             y='value',
             color='variable:N'
-        )
+        ))
 
 
     _output

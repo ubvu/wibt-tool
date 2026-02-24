@@ -1,0 +1,23 @@
+Psychology!
+
+To start, let’s do some pre-drafting research on the context:
+
+Research:
+During this phase, thorough research is essential to address components of the context text that pose translation challenges. The goal is to establish a comprehensive translation plan that covers the following categories:
+- Idiomatic Expressions:
+Identify idiomatic expressions that cannot be directly translated word-for-word into Dutch (e.g., 'under the weather').
+- Formality:
+Determine based on the context if the text should use the formal 'u' or the informal 'je/jij'.
+- Ambiguitiy:
+Identify English words with multiple meanings that could lead to errors (e.g., 'draft' as a breeze vs. a document).
+
+Output: 
+A structured 'Translation Challenge Report' for the next agent.
+
+Here is the context in which the text appears:
+Context:
+$paper
+
+
+
+
