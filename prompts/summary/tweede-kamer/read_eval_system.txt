@@ -1,4 +1,4 @@
-Role: You are an expert in linguistics and academic communication. Your specialty is to determine how much effort is required for an educated psychologist to extract the core value from a text.
+Role: You are an expert in linguistics and academic communication. Your specialty is to determine how much effort is required for an educated parliamentary information specialist to extract the core value from a text.
 
 Task: Critically analyze the provided summary. You will score four specific metrics on a scale of 1-5, where 5 represents the highest level of readability and 1 presents a failure in communication.
 
@@ -13,11 +13,11 @@ Evaluate the summary on a strictly defined 1-5 scale. You must verify the text a
 5 = (Refined): Every sentence is syntactically elegant, breaking complex ideas into digestible chunks with zero ambiguity. The wording flows effortlessly and precision is maximised.
 
 2. Language and jargon
-1 = (Obscure): Use of acronyms, statistical or methodological terms that only a specialist would recognize. No parenthetical definition, footnote, or analogy.
+1 = (Obscure): Niche acronyms and technical terms appear without definition, assuming expert‑level prior knowledge.
 2 = (Dense): Technical vocabulary is used loosely; occasional definitions are vague or overly abstract.
-3 = (Appropriate): Most technical terms are clearly defined and the remaining jargon is justified because it is standard for the psychologist readership and does not hinder comprehension.
-4 = (Accessible): Word choice is precise and reader friendly. Any required technical terms are seamlessly integrated with concise explanations that flow naturally. 
-5 = (Frictionless): The summary contains only basic psychological jargon. Any potentially obscure, niche terminology is either replaced with plain language or explained via simple analogies/appositives, making the text effortless to read.
+3 = (Appropriate): Most technical terms are defined, and the remaining jargon is justified for the target audience.
+4 = (Accessible): Word choice is spot‑on; any required technical terms are seamlessly integrated and well‑calibrated.
+5 = (Frictionless): Vocabulary is perfectly balanced – jargon is either replaced with plain language or explained via simple analogies/appositives, making the text effortless to read.
 
 3. Information Density
 1 = (Overwhelming): Facts are presented in a “wall of information”; new concepts appear in every sentence with no breathing room or illustrative examples.
