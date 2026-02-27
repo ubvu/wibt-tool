@@ -6,7 +6,7 @@ def extract_json(string):
         json_object = json.loads(string)
         return json_object
     except ValueError as e:
-        print ("Invalid json received. Trying to extract it")
+        print("Invalid json received. Trying to extract it")
     
     try:
         # find the json in the text
@@ -23,7 +23,7 @@ def extract_json(string):
         json_object = json.loads(json_string)
         return json_object
     except ValueError as e:
-        print ("Automated json extraction failed...\nAsking the agent to fix their output.")
+        print("Automated json extraction failed...\nAsking the agent to fix their output.")
 
     # put newlines into json formatting
     # json_string = json_string.replace('\n', '\\n') # TODO: only rewrite newlines in values
