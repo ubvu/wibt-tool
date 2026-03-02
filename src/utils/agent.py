@@ -31,25 +31,23 @@ class Agent:
         ]
 
 
-    def _send_messages(self, messages):
-        return self.llm_endpoint.send_messages(self.model, messages, self.temperature)
-
-    def send_message(self, user_prompt=""):
-
-        self.messages += [
-          {
-            "role": "user",
-            "content": user_prompt
-          }
-        ]
+    def send_messages(self, user_prompts):
+        
+        for user_prompt in user_prompts:
+            self.messages += [
+                {
+                    "role": "user",
+                    "content": user_prompt
+                }
+            ]
 
         response = self.llm_endpoint.send_messages(self.model, self.messages, self.temperature)
 
         self.messages += [
-          {
+            {
             "role": "assistant",
             "content": response
-          }
+            }
         ]
 
         if self.history != -1: # -1 is infinite memory
@@ -61,6 +59,10 @@ class Agent:
                 
         print(response)
         return response
+
+
+    def send_message(self, user_prompt=""):
+        return self.send_messages([user_prompt])
 
 
     def get_messages(self):
