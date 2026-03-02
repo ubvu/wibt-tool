@@ -1,0 +1,80 @@
+Your task is to identify domain-specific key facts within the document provided by the user, which are essential pieces of information for a high-quality summary. You are provided key-fact category and description in <category></category> tags, and its example in <example></example>. Each key fact must be presented as a standalone, atomic-level sentence. The following is a set of detailed instructions in <instructions></instructions> tags for identifying key facts.
+
+<instructions>
+1. Identify Key-facts: Extract all key-facts from the text. Each key-fact should:
+    - Be a complete sentence with a subject, verb, and object/complement.
+    - Contain only one action, event, or idea. Avoid compound sentences.
+    - Include no more than two or three entities per key fact. If there are more than three entities, divide them into separate sentences.
+    - Present temporal information (e.g., when, how long) as standalone sentences.
+    - Present causal relationships (e.g., reasons, consequences) as standalone sentences.
+    - Avoid using linking words like ’and,’ ’but,’ ’then,’ or ’because.’ Each idea must be presented as an independent fact.
+    - Do not combine related details, even implicitly. Each sentence must describe exactly one action, idea, or relationship.
+2. Here are the examples of key-fact structure granularity:
+    - Text Example: The resolution authorizes the operation of one winter shelter from December 1st, 2019, to March 31st, 2020.
+    - Key-facts (Revised):
+        (a) The resolution authorizes the operation of one winter shelter.
+        (b) The winter shelter will operate from December 1st, 2019, to March 31st, 2020.
+    - Text Example : The property for the winter shelter was purchased using homeless emergency aid program funding.
+    - Key-facts (Revised):
+        (a) The property for the winter shelter was purchased.
+        (b) Homeless emergency aid program funding was used for the purchase.
+3. Categorize Key-facts:
+    - Define your own categories for the key-facts based on content.
+    - Assign each key-fact to a category.
+4. Compare Categories:
+    - Compare your defined categories with the provided key-fact categories.
+    - Adjust any key-fact to better align with the provided categories.
+5. Validate Key-facts
+    - Ensure each key-fact meets the following criteria:
+        - Correctly categorized.
+        - Atomicity: Conveys only one action, event, or idea.
+        - Clarity: Is concise and clear, avoiding ambiguity.
+        - Brevity: Contains no unnecessary details.
+        - Non-overlapping: Does not duplicate information in other facts.
+    - Finalize key facts that satisfy these conditions.
+</instructions>
+
+<category>
+Here are the provided Key Fact Categories and Descriptions:
+
+Research Finding: Key discoveries or outcomes from medical research studies.
+Medical experiments: Detailed procedures, methodologies, and designs of experiments or clinical trials testing treatments or interventions.
+Disease descriptions: Detailed explanations of diseases, including symptoms, causes, and characteristics.
+Medical Treatment: Recommended therapies, treatments, and interventions aimed at managing or curing diseases.
+Medical Prevention: Strategies and actions aimed at preventing diseases and promoting public health.
+
+</category>
+
+<example>
+Here is an example for each category.
+
+Research Finding: Intervention strategies have helped reduce malaria globally.
+Medical experiments: New mapping techniques track malaria transmission.
+Disease descriptions: Dengue is caused by four viruses (DENV 1-4).
+Medical Treatment: Dengue treatment involves haematological monitoring.
+Medical Prevention: Insecticide-treated bednets have been key to malaria control.
+
+</example>
+
+Provide your answer in JSON format. The answer should be a list of dictionaries:
+The dictionaries contain three fields:
+- fact: The key-fact you have identified.
+- reason: The reason this is a key-fact. Should be a single sentence.
+- category: The category this key-fact belongs to. Needs to be one of the categories given in the <category> field.
+
+An example of the format:
+[
+    {
+        "fact" : "first key fact", 
+        "reason" : "reason why this is a key-fact", 
+        "category" : "the category of the key-fact"
+    }, 
+    {
+        "fact" : "second key fact", 
+        "reason" : "reason why this is a key-fact", 
+        "category" : "the category of the key-fact"
+    }, 
+    ... 
+]
+
+The user will provide you the document.
