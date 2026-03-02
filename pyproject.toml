@@ -9,7 +9,7 @@ dependencies = [
   "marimo",
   "altair",
   "pandas",
-  "pyarrow"
+  "pyarrow",
 ]
 
 [tool.marimo.runtime]
