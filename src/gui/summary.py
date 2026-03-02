@@ -225,7 +225,7 @@ def _(
         factuality_scores = extract_json(factuality_eval_agent.send_message(Template(fact_eval_prompt).substitute(paper=paper, summary=summary)))
         while factuality_scores is None:
             factuality_scores = extract_json(factuality_eval_agent.send_message("Dear friend,\nI was unable to read the json. Did you stick to the template provided in the system prompt?"))
-        
+
         faithfulness = int(factuality_scores['faithfulness'])
         completeness = int(factuality_scores['completeness'])
 
