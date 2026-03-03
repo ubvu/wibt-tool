@@ -1,7 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class Prompt(BaseModel):
-    prompt: str = Field(alias="prompt")
-
-    class Config:
-        populate_by_name = True
+    prompt: str 

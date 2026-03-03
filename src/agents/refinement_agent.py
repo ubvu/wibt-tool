@@ -1,6 +1,6 @@
 from . import Agent
 from string import Template
-from models.prompt import Prompt
+from models import Prompt
 
 class RefinementAgent(Agent):
     def __init__(self, llm_endpoint, model, system_prompt, refine_prompt, temperature=0, history=-1):
@@ -27,5 +27,5 @@ class RefinementAgent(Agent):
             'completeness' : factuality_scores['completeness']
         }
 
-        result = self.send_messages_structured(Template(self.refine_prompt).substitute(prompt_information), Prompt)
+        result = self.send_messages_structured([Template(self.refine_prompt).substitute(prompt_information)], Prompt)
         return result

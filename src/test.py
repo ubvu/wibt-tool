@@ -6,7 +6,7 @@ from string import Template
 from operator import itemgetter
 from utils.open_webui import OpenWebuiClient
 from utils.openai_client import OpenAIClient
-from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent
+from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent, FactExtractorAgent, FactValidatorAgent, FactContainmentAgent
 
 load_dotenv() 
 
@@ -27,6 +27,9 @@ summary_model = os.environ.get('DEFAULT_MODEL')
 refinement_model = os.environ.get('DEFAULT_MODEL')
 draft_model = os.environ.get('DEFAULT_MODEL')
 proofread_model = os.environ.get('DEFAULT_MODEL')
+fact_extractor_model = os.environ.get('DEFAULT_MODEL')
+fact_validator_model = os.environ.get('DEFAULT_MODEL')
+fact_containment_model = os.environ.get('DEFAULT_MODEL')
 
 
 # load a test paper, stored in markdown
@@ -63,6 +66,13 @@ with open("prompts/translation/general/proofread_system.txt") as file:
     proofread_system_prompt = file.read()
 with open("prompts/translation/general/proofread.txt") as file:
     proofread_prompt = file.read()
+    
+with open("prompts/factuality_evaluation/general/key_fact_generation.txt") as file:
+    fact_extractor_system_prompt = file.read()
+with open("prompts/factuality_evaluation/general/key_fact_validation.txt") as file:
+    fact_validator_system_prompt = file.read()
+with open("prompts/factuality_evaluation/general/key_fact_alignment.txt") as file:
+    fact_containment_system_prompt = file.read()
 # with open("") as file:
 #     = file.read()
 # with open("") as file:
@@ -81,10 +91,9 @@ summary_agent = SummaryAgent(
 summary = summary_agent.send_message(paper)
 
 
-print("Summary:")
-print(summary)
+# print("Summary:")
+# print(summary)
 
-# summary = "hey there"
 
 # read_eval_agent = ReadEvalAgent(
 #     llm_endpoint=llm_endpoint,
@@ -118,24 +127,49 @@ print(summary)
 
 # print(f"Prompt:\n{prompt}")
 
-draft_agent = TranslationDraftAgent(
+# draft_agent = TranslationDraftAgent(
+#     llm_endpoint=llm_endpoint,
+#     model=draft_model,
+#     system_prompt=draft_system_prompt,
+#     pre_draft_prompt=pre_draft_prompt,
+#     draft_prompt=draft_prompt,
+#     refine_draft_prompt=refined_draft_prompt
+# )
+
+# proofread_agent = TranslationProofreadAgent(
+#     llm_endpoint=llm_endpoint,
+#     model=proofread_model,
+#     system_prompt=proofread_system_prompt,
+#     proofread_prompt=proofread_prompt
+# )
+
+# draft, refined_draft = draft_agent.write_refined_draft(summary)
+# translation = proofread_agent.proofread_draft(summary, draft, refined_draft)
+
+# print(f"Translation:\n{translation}")
+
+fact_extractor_agent = FactExtractorAgent(
     llm_endpoint=llm_endpoint,
-    model=draft_model,
-    system_prompt=draft_system_prompt,
-    pre_draft_prompt=pre_draft_prompt,
-    draft_prompt=draft_prompt,
-    refine_draft_prompt=refined_draft_prompt
+    model=fact_extractor_model,
+    system_prompt=fact_extractor_system_prompt
 )
 
-proofread_agent = TranslationProofreadAgent(
+facts = fact_extractor_agent.extract_facts(paper)
+print(facts)
+
+fact_validator_agent = FactValidatorAgent(
     llm_endpoint=llm_endpoint,
-    model=proofread_model,
-    system_prompt=proofread_system_prompt,
-    proofread_prompt=proofread_prompt
+    model=fact_validator_model,
+    system_prompt=fact_validator_system_prompt
 )
 
-draft, refined_draft = draft_agent.write_refined_draft(summary)
-translation = proofread_agent.proofread_draft(summary, draft, refined_draft)
+validated_facts = fact_validator_agent.validate_facts(paper, facts)
+print(validated_facts)
 
-print(f"Translation:\n{translation}")
+fact_containment_agent = FactContainmentAgent(
+    llm_endpoint=llm_endpoint,
+    model=fact_containment_model,
+    system_prompt=fact_containment_system_prompt
+)
 
+fact_containment_agent.check_containment(facts, summary) # this is all the facts

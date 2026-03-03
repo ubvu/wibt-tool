@@ -4,6 +4,9 @@ from .refinement_agent import RefinementAgent
 from .summary_agent import SummaryAgent
 from .translation_draft_agent import TranslationDraftAgent
 from .translation_proofread_agent import TranslationProofreadAgent
+from .fact_extractor_agent import FactExtractorAgent
+from .fact_validator_agent import FactValidatorAgent
+from .fact_containment_agent import FactContainmentAgent
 
 __all__ = [
     'Agent', 
@@ -11,5 +14,8 @@ __all__ = [
     'RefinementAgent', 
     'SummaryAgent', 
     'TranslationDraftAgent',
-    'TranslationProofreadAgent'
+    'TranslationProofreadAgent',
+    'FactExtractorAgent',
+    'FactValidatorAgent',
+    'FactContainmentAgent'
     ]

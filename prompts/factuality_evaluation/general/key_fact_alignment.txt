@@ -13,23 +13,23 @@ Instruction:
 
 
 Provide your answer in JSON format. The answer should be a dictionary with the keys the indecies of the statements. Each one has a dictionary with two fields:
-- contained: Whether or not the sentence is "contained", as defined above. Can only be one of the following values, "yes" or "no".
+- contained: Whether or not the sentence is "contained", as defined above. Value is either true, if it does or false, if it does not.
 - reason: A clear one-sentence explanation for your choice.
 
 
 And example of the structure of your response: 
 {
     "1" : {
-            "contained": "your response", 
+            "contained": true/false, 
             "reason": "your reason"
     }, 
     "2" : {
-            "contained": "your response", 
+            "contained": true/false, 
             "reason": "your reason"
     },
     ... , 
     "N" : { 
-            "contained": "your response", 
+            "contained": true/false, 
             "reason": "your reason"
     }
 }

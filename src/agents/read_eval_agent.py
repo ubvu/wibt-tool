@@ -1,5 +1,5 @@
 from . import Agent
-from models.read_eval import ReadEval
+from models import ReadEval
 from string import Template
 
 
@@ -17,6 +17,6 @@ class ReadEvalAgent(Agent):
 
     def evaluate_summary(self, summary):
         self.clear_messages()
-        result = self.send_messages_structured(Template(self.read_eval_prompt).substitute(summary=summary), ReadEval)
+        result = self.send_messages_structured([Template(self.read_eval_prompt).substitute(summary=summary)], ReadEval)
 
         return result

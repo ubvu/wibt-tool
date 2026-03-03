@@ -64,13 +64,16 @@ class Agent:
     def send_message(self, user_prompt=""):
         return self.send_messages([user_prompt])
 
-    def send_messages_structured(self, messages, output_model):
+    def send_messages_structured(self, messages, output_model, number=0):
         _messages = messages
         while True:
             result = extract_json(self.send_messages(_messages))
             if result != None:
                 try:
-                    output_model.model_validate(result)
+                    if number == 0:
+                        output_model.model_validate(result)
+                    else:
+                        [output_model.model_validate(result[f"{i}"]) for i in range(1,number+1)] # check if all the facts are in the list
                     print("✓ Structure is valid")
                     return result
                 except Exception as e:
