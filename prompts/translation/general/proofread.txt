@@ -1,5 +1,5 @@
 Brontekst
-$paper
+$text
 
 Conceptvertaling
 $draft

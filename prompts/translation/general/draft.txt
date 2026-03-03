@@ -9,4 +9,4 @@ In deze fase is je primaire doel een conceptvertaling in het Nederlands te maken
 
 Geef één definitieve vertaling van de volgende tekst, gebaseerd op de voorafgaande pre-conceptanalyse, zonder alternatieven aan te bieden:
 English:
-$paper
+$text

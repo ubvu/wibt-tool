@@ -1,0 +1,141 @@
+import os
+import sys
+import json
+from dotenv import load_dotenv
+from string import Template
+from operator import itemgetter
+from utils.open_webui import OpenWebuiClient
+from utils.openai_client import OpenAIClient
+from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent
+
+load_dotenv() 
+
+default_api = os.environ.get('DEFAULT_API')
+
+if default_api == "OpenWebUI":
+    # load in token needed to connect to Nebula
+    token = os.environ.get('OPEN_WEBUI_TOKEN')
+    url = os.environ.get('OPEN_WEBUI_URL')
+    llm_endpoint = OpenWebuiClient(token, url)
+elif default_api == "OpenAI":
+    # use an OpenAI endpoint instead
+    token = os.environ.get('OPEN_AI_TOKEN')
+    url = os.environ.get('OPEN_AI_URL')
+    llm_endpoint = OpenAIClient(token, url)
+
+summary_model = os.environ.get('DEFAULT_MODEL')
+refinement_model = os.environ.get('DEFAULT_MODEL')
+draft_model = os.environ.get('DEFAULT_MODEL')
+proofread_model = os.environ.get('DEFAULT_MODEL')
+
+
+# load a test paper, stored in markdown
+paper_file_path = sys.argv[1]
+with open(paper_file_path, "r") as file:
+    paper = file.read()
+
+
+with open("prompts/summary/general/summary_system.txt", "r") as file:
+    summary_system_prompt = file.read()
+with open("prompts/summary/general/summarize.txt", "r") as file:
+    summarize_prompt = file.read()
+
+with open("prompts/summary/general/read_eval_system.txt") as file:
+    read_eval_system_prompt = file.read()
+with open("prompts/summary/general/read_eval.txt") as file:
+    read_eval_prompt = file.read()
+
+with open("prompts/summary/general/refine_system.txt") as file:
+    refine_system_prompt = file.read()
+with open("prompts/summary/general/refine.txt") as file:
+    refine_prompt = file.read()
+
+with open("prompts/translation/general/draft_system.txt") as file:
+    draft_system_prompt = file.read()
+with open("prompts/translation/general/draft.txt") as file:
+    draft_prompt = file.read()
+with open("prompts/translation/general/pre_draft.txt") as file:
+    pre_draft_prompt = file.read()
+with open("prompts/translation/general/refine_draft.txt") as file:
+    refined_draft_prompt = file.read()
+
+with open("prompts/translation/general/proofread_system.txt") as file:
+    proofread_system_prompt = file.read()
+with open("prompts/translation/general/proofread.txt") as file:
+    proofread_prompt = file.read()
+# with open("") as file:
+#     = file.read()
+# with open("") as file:
+#     = file.read()
+
+
+summary_agent = SummaryAgent(
+    llm_endpoint=llm_endpoint,
+    model=summary_model,
+    system_prompt=summary_system_prompt,
+    summarize_prompt=summarize_prompt,
+    temperature=0,
+    history=-1
+)
+
+summary = summary_agent.send_message(paper)
+
+
+print("Summary:")
+print(summary)
+
+# summary = "hey there"
+
+# read_eval_agent = ReadEvalAgent(
+#     llm_endpoint=llm_endpoint,
+#     model=summary_model,
+#     system_prompt=read_eval_system_prompt,
+#     read_eval_prompt=read_eval_prompt,
+#     temperature=0,
+#     history=-1
+# )
+
+# read_eval = read_eval_agent.evaluate_summary(summary)
+
+# print(f"Read eval:\n{read_eval}")
+
+# refinement_agent = RefinementAgent(
+#     llm_endpoint=llm_endpoint,
+#     model=refinement_model,
+#     system_prompt=refine_system_prompt,
+#     refine_prompt=refine_prompt
+# )
+
+# prompt = refinement_agent.refine("Summarize this paper.", {
+#     "Syntactic clarities": 3,
+#     "Jargon": 3,
+#     "Information density": 1,
+#     "Structural cohesion": 2
+# }, {
+#     'faithfulness' : 2,
+#     'completeness' : 3
+# })
+
+# print(f"Prompt:\n{prompt}")
+
+draft_agent = TranslationDraftAgent(
+    llm_endpoint=llm_endpoint,
+    model=draft_model,
+    system_prompt=draft_system_prompt,
+    pre_draft_prompt=pre_draft_prompt,
+    draft_prompt=draft_prompt,
+    refine_draft_prompt=refined_draft_prompt
+)
+
+proofread_agent = TranslationProofreadAgent(
+    llm_endpoint=llm_endpoint,
+    model=proofread_model,
+    system_prompt=proofread_system_prompt,
+    proofread_prompt=proofread_prompt
+)
+
+draft, refined_draft = draft_agent.write_refined_draft(summary)
+translation = proofread_agent.proofread_draft(summary, draft, refined_draft)
+
+print(f"Translation:\n{translation}")
+
