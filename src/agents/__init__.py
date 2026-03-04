@@ -8,6 +8,7 @@ from .fact_extractor_agent import FactExtractorAgent
 from .fact_validator_agent import FactValidatorAgent
 from .fact_containment_agent import FactContainmentAgent
 from .adjudicator_agent import AdjudicatorAgent
+from .argument_agent import ArgumentAgent
 
 __all__ = [
     'Agent', 
@@ -19,5 +20,6 @@ __all__ = [
     'FactExtractorAgent',
     'FactValidatorAgent',
     'FactContainmentAgent',
+    'ArgumentAgent',
     'AdjudicatorAgent'
     ]

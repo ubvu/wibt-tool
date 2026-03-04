@@ -78,7 +78,10 @@ class Agent:
                     return result
                 except Exception as e:
                     print(f"✗ Structure validation failed: {e}")
-            _messages = ["I could not process your response. Are you sure that you have provided a response exactly like the system prompt states?"]
+            _output_fix_request = "I could not process your response. Are you sure that you have provided a response exactly like the system prompt states?"
+            if number != 0:
+                _output_fix_request += f" There are {number} entries expected."
+            _messages = [_output_fix_request]
 
 
     def get_messages(self):

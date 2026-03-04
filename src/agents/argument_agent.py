@@ -1,5 +1,6 @@
 from . import Agent
 from models import Argument
+from utils import get_numbered_sentences
 
 
 
@@ -16,9 +17,11 @@ class ArgumentAgent(Agent):
 
     def argue(self, paper, summary):
         self.clear_messages()
-        numbered_paper = paper
-        numbered_summary = summary # TODO: fix me
-        number_of_summary_lines = 1 # TODO: fix me
+        split_paper = get_numbered_sentences(paper)
+        numbered_paper = '\n'.join(split_paper)
+        split_summary = get_numbered_sentences(summary)
+        numbered_summary = '\n'.join(split_summary)
+        number_of_summary_lines = len(split_summary)
         arguments = self.send_messages_structured([f"Paper:\n\n{numbered_paper}", f"Summary:\n\n{numbered_summary}"], Argument, number=number_of_summary_lines)
 
         return arguments

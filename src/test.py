@@ -6,7 +6,9 @@ from string import Template
 from operator import itemgetter
 from utils.open_webui import OpenWebuiClient
 from utils.openai_client import OpenAIClient
-from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent, FactExtractorAgent, FactValidatorAgent, FactContainmentAgent
+from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent, FactExtractorAgent, FactValidatorAgent, FactContainmentAgent, ArgumentAgent, AdjudicatorAgent
+from utils import get_numbered_sentences
+
 
 load_dotenv() 
 
@@ -30,6 +32,9 @@ proofread_model = os.environ.get('DEFAULT_MODEL')
 fact_extractor_model = os.environ.get('DEFAULT_MODEL')
 fact_validator_model = os.environ.get('DEFAULT_MODEL')
 fact_containment_model = os.environ.get('DEFAULT_MODEL')
+advocate_model = os.environ.get('DEFAULT_MODEL')
+skeptic_model = os.environ.get('DEFAULT_MODEL')
+adjudicator_model = os.environ.get('DEFAULT_MODEL')
 
 
 # load a test paper, stored in markdown
@@ -37,6 +42,15 @@ paper_file_path = sys.argv[1]
 with open(paper_file_path, "r") as file:
     paper = file.read()
 
+# load a test summary, stored in markdown
+summary_file_path = sys.argv[2]
+with open(summary_file_path, "r") as file:
+    summary = file.read()
+
+split_summary = get_numbered_sentences(summary)
+numbered_summary = '\n'.join(split_summary)
+
+print(numbered_summary)
 
 with open("prompts/summary/general/summary_system.txt", "r") as file:
     summary_system_prompt = file.read()
@@ -73,22 +87,26 @@ with open("prompts/factuality_evaluation/general/key_fact_validation.txt") as fi
     fact_validator_system_prompt = file.read()
 with open("prompts/factuality_evaluation/general/key_fact_alignment.txt") as file:
     fact_containment_system_prompt = file.read()
+with open("prompts/factuality_evaluation/general/advocate.txt") as file:
+    advocate_system_prompt = file.read()
+with open("prompts/factuality_evaluation/general/skeptic.txt") as file:
+    skeptic_system_prompt = file.read()
+with open("prompts/factuality_evaluation/general/adjudicator.txt") as file:
+    adjudicator_system_prompt = file.read()
 # with open("") as file:
 #     = file.read()
-# with open("") as file:
-#     = file.read()
 
 
-summary_agent = SummaryAgent(
-    llm_endpoint=llm_endpoint,
-    model=summary_model,
-    system_prompt=summary_system_prompt,
-    summarize_prompt=summarize_prompt,
-    temperature=0,
-    history=-1
-)
+# summary_agent = SummaryAgent(
+#     llm_endpoint=llm_endpoint,
+#     model=summary_model,
+#     system_prompt=summary_system_prompt,
+#     summarize_prompt=summarize_prompt,
+#     temperature=0,
+#     history=-1
+# )
 
-summary = summary_agent.send_message(paper)
+# summary = summary_agent.send_message(paper)
 
 
 # print("Summary:")
@@ -148,28 +166,56 @@ summary = summary_agent.send_message(paper)
 
 # print(f"Translation:\n{translation}")
 
-fact_extractor_agent = FactExtractorAgent(
+# fact_extractor_agent = FactExtractorAgent(
+#     llm_endpoint=llm_endpoint,
+#     model=fact_extractor_model,
+#     system_prompt=fact_extractor_system_prompt
+# )
+
+# facts = fact_extractor_agent.extract_facts(paper)
+# print(facts)
+
+# fact_validator_agent = FactValidatorAgent(
+#     llm_endpoint=llm_endpoint,
+#     model=fact_validator_model,
+#     system_prompt=fact_validator_system_prompt
+# )
+
+# facts_validations = fact_validator_agent.validate_facts(paper, facts)
+# print(validated_facts)
+
+# fact_containment_agent = FactContainmentAgent(
+#     llm_endpoint=llm_endpoint,
+#     model=fact_containment_model,
+#     system_prompt=fact_containment_system_prompt
+# )
+
+# fact_containment_agent.check_containment(facts, summary) # this is all the facts
+
+advocate_agent = ArgumentAgent(
     llm_endpoint=llm_endpoint,
-    model=fact_extractor_model,
-    system_prompt=fact_extractor_system_prompt
+    model=advocate_model,
+    system_prompt=advocate_system_prompt
+    )
+
+skeptic_agent = ArgumentAgent(
+    llm_endpoint=llm_endpoint,
+    model=skeptic_model,
+    system_prompt=skeptic_system_prompt
 )
 
-facts = fact_extractor_agent.extract_facts(paper)
-print(facts)
-
-fact_validator_agent = FactValidatorAgent(
+adjudicator_agent = AdjudicatorAgent(
     llm_endpoint=llm_endpoint,
-    model=fact_validator_model,
-    system_prompt=fact_validator_system_prompt
+    model=adjudicator_model,
+    system_prompt=adjudicator_system_prompt
 )
 
-validated_facts = fact_validator_agent.validate_facts(paper, facts)
-print(validated_facts)
+advocate_arguments = advocate_agent.argue(paper, summary)
+skeptic_arguments = skeptic_agent.argue(paper, summary)
 
-fact_containment_agent = FactContainmentAgent(
-    llm_endpoint=llm_endpoint,
-    model=fact_containment_model,
-    system_prompt=fact_containment_system_prompt
-)
+adjudicator_judgements = adjudicator_agent.judge(paper, summary, advocate_arguments, skeptic_arguments)
 
-fact_containment_agent.check_containment(facts, summary) # this is all the facts
+
+print(numbered_summary)
+
+# print(adjudicator_judgements)
