@@ -17,7 +17,7 @@ A structured 'Translation Challenge Report' for the next agent.
 
 Here is the context in which the text appears:
 Context:
-$paper
+$text
 
 
 

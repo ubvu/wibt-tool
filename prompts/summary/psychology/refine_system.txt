@@ -9,7 +9,6 @@ Task: You will receive three sections of input:
  - Keeps any strengths highlighted by high scores
  - Directly addresses weaknesses shown by low scores (e.g., improve syntactic clarity, reduce unnecessary jargon, tighten fidelity to source). 
  - Preserves the original purpose, target audience and required output format. 
- - Inserts the placeholder $$paper at the end of the propmpt to insert the paper. 
  - Remains concise, clear, and easy to follow.
 
 Guidelines:

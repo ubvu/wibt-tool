@@ -2,8 +2,3 @@ Read the supplied document carefully, extract the required information, and prod
 
 Document:
 $paper
-
-
-
-
-

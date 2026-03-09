@@ -66,22 +66,22 @@ Medical Prevention: Insecticide-treated bednets have been key to malaria control
 </example>
 
 Provide your answer in JSON format. The answer should be a dictionary with the keys the indecies of the sentences. Each one has a dictionary with two fields:
-- response: whether the fact follows the criteria. Value needs to be 'yes' or 'no'.
-- reason: A one sentence reason for your decision.
+- response: whether the fact follows the criteria. Value is either true, if it does or false, if it does not. This is a boolean value.
+- reason: A one sentence reason for your decision. This is a string value.
 
 And example of the structure of your response: 
 {
     "1" : {
-            "response": "your response", 
+            "response": true/false, 
             "reason": "your reason"
     }, 
     "2" : {
-            "response": "your response", 
+            "response": true/false, 
             "reason": "your reason"
     },
     ... , 
     "N" : { 
-            "response": "your response", 
+            "response": true/false, 
             "reason": "your reason"
     }
 }

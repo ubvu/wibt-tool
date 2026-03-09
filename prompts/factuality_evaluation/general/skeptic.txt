@@ -32,17 +32,17 @@ Follow these steps carefully to ensure a structured and thorough evaluation unde
 </instructions>
 
 Provide your answers in JSON format. The answer should be a dictionary with the keys the indecies of the sentences in the summary. Each dictionary has four fields:
-- faithful: Whether or not the sentence in the summary follows from the original text. In your case, this should always be false.
-- error_type: Which error type is applicable. Should be "no error" if the sentences is faithful.
-- reference_sentences: The sentences in the original text that support your evaluation about the summary sentence the most.
-- reason: A sentence or two about the reasoning behind the evaluation you made.
+- faithful: Whether or not the sentence in the summary follows from the original text. This is a boolean value.
+- error_type: Which error type is applicable. Should be "no error" if the sentences is faithful. This is a string value.
+- reference_sentence_numbers: The line numbers of the sentences in the original text that support your evaluation about the summary sentence the most. This is a list of integers.
+- reason: A sentence or two about the reasoning behind the evaluation you made. This is a string value.
 
 And example of the structure of your response: 
 {
     "1" : {
         "faithful" : false,
         "error_type" : "sentence error",
-        "reference_sentences" : [3,4],
+        "reference_sentence_numbers" : [3,4],
         "reason" : "The information in the sentence says X, but sentences [3] and [4] say Y."
     },
     "2" : { ... },

@@ -1,4 +1,4 @@
 Please translate this document into Dutch:
-$paper
+$text
 
 Please provide only the translation without any additional text or explanation.
