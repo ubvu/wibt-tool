@@ -49,10 +49,10 @@ Evaluate the summary on a strictly defined 1-5 scale. You must verify the text a
 
 4. Text structure:
 1 = (Disjointed): No key‑point list, missing or incorrect headings, bullets used excessively, visuals irrelevant; layout chaotic.
-2 = (Fragmented): Some required elements are present but several are missing or misplaced; bullet use is uneven.
-3 = (Linear): All required sections exist in correct order; key points, headings, and moderate bullets are present; minor layout issues.
-4 = (Coherent): Clear, logical order with appropriate headings; key‑point list prominent; bullet use disciplined; any visual aids are justified.
-5 = (Seamless): Perfectly organized: key points instantly visible, headings flow naturally, bullet usage minimal and purposeful, visuals (if any) add essential clarity; narrative arc feels invisible yet coherent.
+2 = (Fragmented): Some required elements are present but several are missing or misplaced; bullet use outside of the key points.
+3 = (Linear): All required sections exist in correct order; key points, headings, and minimal bullets are present; minor layout issues.
+4 = (Coherent): Clear, logical order with appropriate headings; key‑point list prominent; bullet use minimal; any visual aids are justified.
+5 = (Seamless): Perfectly organized: key points instantly visible, headings flow naturally, no bullet use outside of key points, visuals (if any) add essential clarity; narrative arc feels invisible yet coherent.
 
 Please provide your answer in the following JSON format. Do not include backticks or explanatory text outside the JSON. 
 

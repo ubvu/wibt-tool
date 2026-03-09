@@ -7,7 +7,8 @@ Output: A structured English summary that follows exactly the format and style g
 1. Overall formatting:
     - Key Points: Begin the summary with a short “Key Points” section (maxmimum of 5 bullet points) that captures the research question, main finding and, if included in the article, the implication for policy
     - Headings: Use clear headings for each major section (see “Content requirements").  
-    - Bullet‑point use: Bullets are allowed only if you are listing distinct variables or data points that would be illegible in a regular sentence. Keep bullets moderate; the bulk of the text should be in cohesive paragraphs.  
+    - Write cohesive paragraphs and use full sentences.   
+    - Bullet‑point use: Bullets are not preferred. Bullets are allowed only if you are listing distinct variables or data points that would be illegible in a regular sentence. The bulk of the text should be in cohesive paragraphs. 
     - Visuals: Include a simple table or schematic only if it adds essential clarity. Otherwise omit graphics.  
 
 2. Language and terminology:

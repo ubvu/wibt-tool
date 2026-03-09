@@ -10,7 +10,7 @@ During this phase, thorough research is essential to address components of the c
 3. Ambiguitiy:
     - Identify English words with multiple meanings that could lead to errors (e.g., 'draft' as a breeze vs. a document).
 4. Specialized terminology:
-    - Spot all discipline-specific words and jargon that must stay in English (e.g., in psychology: 'exposure')
+    - Spot all discipline-specific words and jargon that must stay in English (e.g., in psychology: 'exposure', in statistics: 'Wilcoxon signed-rank test'). 
 
 Output: 
 A structured 'Translation Challenge Report' for the next agent.
