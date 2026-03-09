@@ -30,8 +30,8 @@ class AdjudicatorAgent(Agent):
         judgements = self.send_messages_structured(
             [
                 f"Paper:\n\n{numbered_paper}", 
-                f"Summary:\n\n{numbered_summary}", 
-                f"Arguments:\n\n{formatted_arguments}"
+                f"Summary with {number_of_summary_lines} lines:\n\n{numbered_summary}", 
+                f"Arguments ({number_of_summary_lines}):\n\n{formatted_arguments}"
             ], Judgement, 
             number=number_of_summary_lines
         )
@@ -51,14 +51,14 @@ class AdjudicatorAgent(Agent):
             merged_lines.append("- Advocate:")
             merged_lines.append(f"-- Faithful: {advocate_argument['faithful']}")
             merged_lines.append(f"-- Error type: {advocate_argument['error_type']}")
-            merged_lines.append(f"-- Reference sentences: {advocate_argument['reference_sentences']}")
+            merged_lines.append(f"-- Reference sentences: {advocate_argument['reference_sentence_numbers']}")
             merged_lines.append(f"-- Reason: {advocate_argument['reason']}")
 
             skeptic_argument = skeptic_arguments[str(i)]
             merged_lines.append("- Skeptic:")
             merged_lines.append(f"-- Faithful: {skeptic_argument['faithful']}")
             merged_lines.append(f"-- Error type: {skeptic_argument['error_type']}")
-            merged_lines.append(f"-- Reference sentences: {skeptic_argument['reference_sentences']}")
+            merged_lines.append(f"-- Reference sentences: {skeptic_argument['reference_sentence_numbers']}")
             merged_lines.append(f"-- Reason: {skeptic_argument['reason']}")
 
             merged_lines.append('\n')

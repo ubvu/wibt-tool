@@ -13,8 +13,8 @@ Instruction:
 
 
 Provide your answer in JSON format. The answer should be a dictionary with the keys the indecies of the statements. Each one has a dictionary with two fields:
-- contained: Whether or not the sentence is "contained", as defined above. Value is either true, if it does or false, if it does not.
-- reason: A clear one-sentence explanation for your choice.
+- contained: Whether or not the sentence is "contained", as defined above. Value is either true, if it does or false, if it does not. This is a boolean value.
+- reason: A clear one-sentence explanation for your choice. This is a string value.
 
 
 And example of the structure of your response: 

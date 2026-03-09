@@ -16,9 +16,8 @@ class FactValidatorAgent(Agent):
 
     def validate_facts(self, paper, facts):
         self.clear_messages()
-        print(f"Expect {len(facts)}")
         formatted_facts = self._format_facts_for_validation(facts)
-        fact_validations = self.send_messages_structured([f"Paper:\n\n{paper}", f"Fact list:\n\n{formatted_facts}"], KeyFactValidation, number=len(facts))
+        fact_validations = self.send_messages_structured([f"Paper:\n\n{paper}", f"Fact list:\n\n{formatted_facts}\n\nPlease make sure to include an evaluation for all {len(facts)} facts."], KeyFactValidation, number=len(facts))
 
         return fact_validations
 

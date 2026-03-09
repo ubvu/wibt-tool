@@ -16,9 +16,8 @@ class FactContainmentAgent(Agent):
 
     def check_containment(self, facts, summary):
         self.clear_messages()
-        print(f"Expect {len(facts)}")
         formatted_facts = self._format_facts_for_alignment(facts)
-        fact_containment = self.send_messages_structured([f"Statements:\n\n{formatted_facts}", f"Summary:\n\n{summary}"], KeyFactContainment, number=len(facts))
+        fact_containment = self.send_messages_structured([f"Statements:\n\n{formatted_facts}", f"Summary:\n\n{summary}\n\nPlease make sure to include an evaluation for all the {len(facts)} statements."], KeyFactContainment, number=len(facts))
 
         return fact_containment
 

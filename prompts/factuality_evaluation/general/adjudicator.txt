@@ -37,9 +37,9 @@ and make sure to always strive to deeply understand and remember the guidelines 
 </instructions>
 
 Provide your answers in JSON format. The answer should be a dictionary with the keys the indecies of the sentences in the summary. Each dictionary has four fields:
-- faithful: Whether or not the sentence in the summary follows from the original text.
-- error_type: Which error type is applicable. Should be "no error" if the sentences is faithful.
-- reason: A sentence or two about the reasoning behind the evaluation you made.
+- faithful: Whether or not the sentence in the summary follows from the original text. This is a boolean value.
+- error_type: Which error type is applicable. Should be "no error" if the sentences is faithful. This is a string.
+- reason: A sentence or two about the reasoning behind the evaluation you made. This is a string.
 
 And example of the structure of your response: 
 {
