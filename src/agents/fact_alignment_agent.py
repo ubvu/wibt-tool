@@ -3,7 +3,7 @@ from models import KeyFactContainment
 
 
 
-class FactContainmentAgent(Agent):
+class FactAlignmentAgent(Agent):
     def __init__(self, llm_endpoint, model, system_prompt, temperature=0, history=-1):
         super().__init__(
             llm_endpoint=llm_endpoint, 
@@ -14,7 +14,7 @@ class FactContainmentAgent(Agent):
         )
 
 
-    def check_containment(self, facts, summary):
+    def check_alignment(self, facts, summary):
         self.clear_messages()
         formatted_facts = self._format_facts_for_alignment(facts)
         fact_containment = self.send_messages_structured([f"Statements:\n\n{formatted_facts}", f"Summary:\n\n{summary}\n\nPlease make sure to include an evaluation for all the {len(facts)} statements."], KeyFactContainment, number=len(facts))
