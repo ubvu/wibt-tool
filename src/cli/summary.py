@@ -10,7 +10,7 @@ from operator import itemgetter
 from dotenv import load_dotenv
 from utils.open_webui import OpenWebuiClient
 from utils.openai_client import OpenAIClient
-from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent, FactExtractorAgent, FactValidatorAgent, FactContainmentAgent, ArgumentAgent, AdjudicatorAgent
+from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent, FactExtractorAgent, FactValidatorAgent, FactAlignmentAgent, ArgumentAgent, AdjudicatorAgent
 from utils.json_helper import extract_json
 import math
 
@@ -37,9 +37,9 @@ def filter_by_majority_vote(
     return [fact['fact'] for fact in filtered]
 
 def calculate_completeness(summary, facts):
-    fact_containment = fact_containment_agent.check_containment(facts, summary)
-    total = len(fact_containment.values())
-    contained = sum(1 if fact['contained'] else 0 for fact in fact_containment.values())
+    fact_alignment = fact_alignment_agent.check_alignment(facts, summary)
+    total = len(fact_alignment.values())
+    contained = sum(1 if fact['contained'] else 0 for fact in fact_alignment.values())
 
     return math.floor(contained/total * 5)
 
@@ -97,19 +97,32 @@ elif default_api == "OpenAI":
 
 summary_model = os.environ.get('DEFAULT_SUMMARY_MODEL')
 refinement_model = os.environ.get('DEFAULT_REFINEMENT_MODEL')
+read_eval_model = os.environ.get('DEFAULT_READ_EVAL_MODEL')
 draft_model = os.environ.get('DEFAULT_DRAFT_MODEL')
 proofread_model = os.environ.get('DEFAULT_PROOFREAD_MODEL')
 fact_extractor_model = os.environ.get('DEFAULT_FACT_EXTRACTION_MODEL')
 fact_validator_models = os.environ.get('DEFAULT_FACT_VALIDATION_MODEL').split(',')
-fact_containment_model = os.environ.get('DEFAULT_ALIGNMENT_MODEL')
+fact_alignment_model = os.environ.get('DEFAULT_ALIGNMENT_MODEL')
 advocate_model = os.environ.get('DEFAULT_ADVOCATE_MODEL')
 skeptic_model = os.environ.get('DEFAULT_SKEPTIC_MODEL')
 adjudicator_model = os.environ.get('DEFAULT_ADJUDICATOR_MODEL')
 
+summary_model_temp = int(os.environ.get('DEFAULT_SUMMARY_MODEL_TEMP'))
+refinement_model_temp = int(os.environ.get('DEFAULT_REFINEMENT_MODEL_TEMP'))
+read_eval_model_temp = int(os.environ.get('DEFAULT_READ_EVAL_MODEL_TEMP'))
+draft_model_temp = int(os.environ.get('DEFAULT_DRAFT_MODEL_TEMP'))
+proofread_model_temp = int(os.environ.get('DEFAULT_PROOFREAD_MODEL_TEMP'))
+fact_extractor_model_temp = int(os.environ.get('DEFAULT_FACT_EXTRACTION_MODEL_TEMP'))
+fact_validator_models_temps = [int(temp) for temp in os.environ.get('DEFAULT_FACT_VALIDATION_MODEL_TEMP').split(',')]
+fact_alignment_model_temp = int(os.environ.get('DEFAULT_ALIGNMENT_MODEL_TEMP'))
+advocate_model_temp = int(os.environ.get('DEFAULT_ADVOCATE_MODEL_TEMP'))
+skeptic_model_temp = int(os.environ.get('DEFAULT_SKEPTIC_MODEL_TEMP'))
+adjudicator_model_temp = int(os.environ.get('DEFAULT_ADJUDICATOR_MODEL_TEMP'))
+
 
 # Get paper file path from command line
-if len(sys.argv) < 5:
-    print(f"Usage: {sys.argv[0]} <input paper path> <output summary path> <context> <number of iterations>")
+if len(sys.argv) < 7:
+    print(f"Usage: {sys.argv[0]} <input paper path> <output summary path> <number of iterations> <summary context> <factuality context> <translation context>")
     sys.exit(1)
 
 
@@ -118,54 +131,56 @@ paper_file_path = sys.argv[1]
 with open(paper_file_path, "r") as file:
     paper = file.read()
 
-context = sys.argv[3]
-
-number_of_iterations = int(sys.argv[4])
+number_of_iterations = int(sys.argv[3])
 
 output_path = sys.argv[2]
 
+summary_context = sys.argv[4]
+factuality_context = sys.argv[5]
+translation_context = sys.argv[6]
+
 
 # load prompt templates for the different agents
-with open(f"prompts/summary/{context}/summary_system.txt", "r") as file:
+with open(f"prompts/summary/{summary_context}/summary_system.txt", "r") as file:
     summary_system_prompt = file.read()
-with open(f"prompts/summary/{context}/summarize.txt", "r") as file:
+with open(f"prompts/summary/{summary_context}/summarize.txt", "r") as file:
     summarize_prompt = file.read()
 
-with open(f"prompts/summary/{context}/read_eval_system.txt") as file:
+with open(f"prompts/summary/{summary_context}/read_eval_system.txt") as file:
     read_eval_system_prompt = file.read()
-with open(f"prompts/summary/{context}/read_eval.txt") as file:
+with open(f"prompts/summary/{summary_context}/read_eval.txt") as file:
     read_eval_prompt = file.read()
 
-with open(f"prompts/summary/{context}/refine_system.txt") as file:
+with open(f"prompts/summary/{summary_context}/refine_system.txt") as file:
     refine_system_prompt = file.read()
-with open(f"prompts/summary/{context}/refine.txt") as file:
+with open(f"prompts/summary/{summary_context}/refine.txt") as file:
     refine_prompt = file.read()
 
-with open(f"prompts/translation/{context}/draft_system.txt") as file:
+with open(f"prompts/translation/{translation_context}/draft_system.txt") as file:
     draft_system_prompt = file.read()
-with open(f"prompts/translation/{context}/draft.txt") as file:
+with open(f"prompts/translation/{translation_context}/draft.txt") as file:
     draft_prompt = file.read()
-with open(f"prompts/translation/{context}/pre_draft.txt") as file:
+with open(f"prompts/translation/{translation_context}/pre_draft.txt") as file:
     pre_draft_prompt = file.read()
-with open(f"prompts/translation/{context}/refine_draft.txt") as file:
+with open(f"prompts/translation/{translation_context}/refine_draft.txt") as file:
     refined_draft_prompt = file.read()
 
-with open(f"prompts/translation/{context}/proofread_system.txt") as file:
+with open(f"prompts/translation/{translation_context}/proofread_system.txt") as file:
     proofread_system_prompt = file.read()
-with open(f"prompts/translation/{context}/proofread.txt") as file:
+with open(f"prompts/translation/{translation_context}/proofread.txt") as file:
     proofread_prompt = file.read()
     
-with open(f"prompts/factuality_evaluation/{context}/key_fact_generation.txt") as file:
+with open(f"prompts/factuality_evaluation/{factuality_context}/key_fact_generation.txt") as file:
     fact_extractor_system_prompt = file.read()
-with open(f"prompts/factuality_evaluation/{context}/key_fact_validation.txt") as file:
+with open(f"prompts/factuality_evaluation/{factuality_context}/key_fact_validation.txt") as file:
     fact_validator_system_prompt = file.read()
-with open(f"prompts/factuality_evaluation/{context}/key_fact_alignment.txt") as file:
-    fact_containment_system_prompt = file.read()
-with open(f"prompts/factuality_evaluation/{context}/advocate.txt") as file:
+with open(f"prompts/factuality_evaluation/{factuality_context}/key_fact_alignment.txt") as file:
+    fact_alignment_system_prompt = file.read()
+with open(f"prompts/factuality_evaluation/{factuality_context}/advocate.txt") as file:
     advocate_system_prompt = file.read()
-with open(f"prompts/factuality_evaluation/{context}/skeptic.txt") as file:
+with open(f"prompts/factuality_evaluation/{factuality_context}/skeptic.txt") as file:
     skeptic_system_prompt = file.read()
-with open(f"prompts/factuality_evaluation/{context}/adjudicator.txt") as file:
+with open(f"prompts/factuality_evaluation/{factuality_context}/adjudicator.txt") as file:
     adjudicator_system_prompt = file.read()
 
 
@@ -175,16 +190,16 @@ summary_agent = SummaryAgent(
     model=summary_model,
     system_prompt=summary_system_prompt,
     summarize_prompt=summarize_prompt,
-    temperature=0,
+    temperature=summary_model_temp,
     history=-1
 )
 
 read_eval_agent = ReadEvalAgent(
     llm_endpoint=llm_endpoint,
-    model=summary_model,
+    model=read_eval_model,
     system_prompt=read_eval_system_prompt,
     read_eval_prompt=read_eval_prompt,
-    temperature=0,
+    temperature=read_eval_model_temp,
     history=-1
 )
 
@@ -192,7 +207,8 @@ refinement_agent = RefinementAgent(
     llm_endpoint=llm_endpoint,
     model=refinement_model,
     system_prompt=refine_system_prompt,
-    refine_prompt=refine_prompt
+    refine_prompt=refine_prompt,
+    temperature=refinement_model_temp
 )
 
 draft_agent = TranslationDraftAgent(
@@ -201,50 +217,58 @@ draft_agent = TranslationDraftAgent(
     system_prompt=draft_system_prompt,
     pre_draft_prompt=pre_draft_prompt,
     draft_prompt=draft_prompt,
-    refine_draft_prompt=refined_draft_prompt
+    refine_draft_prompt=refined_draft_prompt,
+    temperature=draft_model_temp
 )
 
 proofread_agent = TranslationProofreadAgent(
     llm_endpoint=llm_endpoint,
     model=proofread_model,
     system_prompt=proofread_system_prompt,
-    proofread_prompt=proofread_prompt
+    proofread_prompt=proofread_prompt,
+    temperature=proofread_model_temp
 )
 
 fact_extractor_agent = FactExtractorAgent(
     llm_endpoint=llm_endpoint,
     model=fact_extractor_model,
-    system_prompt=fact_extractor_system_prompt
+    system_prompt=fact_extractor_system_prompt,
+    temperature=fact_extractor_model_temp
 )
 
 fact_validator_agents = [FactValidatorAgent(
     llm_endpoint=llm_endpoint,
-    model=fact_validator_model,
-    system_prompt=fact_validator_system_prompt
-) for fact_validator_model in fact_validator_models]
+    model=fact_validator_models[i],
+    system_prompt=fact_validator_system_prompt,
+    temperature=fact_validator_models_temps[i]
+) for i in range(len(fact_validator_models))]
 
-fact_containment_agent = FactContainmentAgent(
+fact_alignment_agent = FactAlignmentAgent(
     llm_endpoint=llm_endpoint,
-    model=fact_containment_model,
-    system_prompt=fact_containment_system_prompt
+    model=fact_alignment_model,
+    system_prompt=fact_alignment_system_prompt,
+    temperature=fact_alignment_model_temp
 )
 
 advocate_agent = ArgumentAgent(
     llm_endpoint=llm_endpoint,
     model=advocate_model,
-    system_prompt=advocate_system_prompt
+    system_prompt=advocate_system_prompt,
+    temperature=advocate_model_temp
     )
 
 skeptic_agent = ArgumentAgent(
     llm_endpoint=llm_endpoint,
     model=skeptic_model,
-    system_prompt=skeptic_system_prompt
+    system_prompt=skeptic_system_prompt,
+    temperature=skeptic_model_temp
 )
 
 adjudicator_agent = AdjudicatorAgent(
     llm_endpoint=llm_endpoint,
     model=adjudicator_model,
-    system_prompt=adjudicator_system_prompt
+    system_prompt=adjudicator_system_prompt,
+    temperature=adjudicator_model_temp
 )
 
 
