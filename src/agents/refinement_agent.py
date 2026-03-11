@@ -19,10 +19,10 @@ class RefinementAgent(Agent):
 
         prompt_information = {
             'prompt' : prompt,
-            'clarity' : readability_scores['Syntactic clarity'],
-            'jargon' : readability_scores['Jargon'],
-            'density' : readability_scores['Information density'],
-            'cohesion' : readability_scores['Structural cohesion'],
+            'clarity' : readability_scores['syntactic_clarity'],
+            'jargon' : readability_scores['jargon'],
+            'density' : readability_scores['information_density'],
+            'cohesion' : readability_scores['structural_cohesion'],
             'faithfulness' : factuality_scores['faithfulness'],
             'completeness' : factuality_scores['completeness']
         }

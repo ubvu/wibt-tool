@@ -27,7 +27,6 @@ This is a list of the categories.
 <category>
 Here are the provided Key Fact Categories and Descriptions:
 
-1. Scientific articles
 Hypothesis: The specific research question, purpose or predicted outcome being tested. 
 Methodology: Experimental design, materials, tools and protocols used to gather data.
 Data and results: Raw findings, statistical values, observations and quantitative measurements. 
@@ -35,33 +34,18 @@ Analysis and discussion: Interpretation of the data, including how it confirms o
 Theoretical framework: The existing laws, models or theories that provide the foundation for the study. 
 Liminations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
 
-2. Medical literature
-Research Finding: Key discoveries or outcomes from research studies.
-Medical experiments: Detailed procedures, methodologies, and designs of experiments or clinical trials testing treatments or interventions.
-Disease descriptions: Detailed explanations of diseases, including symptoms, causes, and characteristics.
-Medical Treatment: Recommended therapies, treatments, and interventions aimed at managing or curing diseases.
-Medical Prevention: Strategies and actions aimed at preventing diseases and promoting public health.
-
 </category>
 
 And some examples.
 <example>
 Here is an example for each category.
 
-Scientific articles
 Hypothesis: Researchers predicted a decrease in shell thickness.
 Methodology: Researchers exposed 100 mussels to pH 7.5 seawater.
 Data and Results: The experimental group showed a 15% reduction in shell density.
 Analysis and Discussion: Lower pH levels interfere with the calcification process.
 Theoretical Framework: Ocean acidification is driven by atmospheric CO2 absorption.
 Limitations and Future Work: The impact of ocean warming remains unknown.
-
-Medical literature
-Research Finding: Intervention strategies have helped reduce malaria globally.
-Medical experiments: New mapping techniques track malaria transmission.
-Disease descriptions: Dengue is caused by four viruses (DENV 1-4).
-Medical Treatment: Dengue treatment involves haematological monitoring.
-Medical Prevention: Insecticide-treated bednets have been key to malaria control.
 
 </example>
 
