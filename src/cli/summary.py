@@ -56,8 +56,9 @@ def format_facts(facts_overview):
         result[category].append(fact)
     text = ""
     for key in result.keys():
-        text += f"{key}:\n-"
-        text += "\n-".join(result[key])
+        text += f"{key}:\n"
+        for i in range(len(result[key])):
+            text += f"{i + 1}: {result[key][i]}\n"
         text += "\n\n"
     return text
 
