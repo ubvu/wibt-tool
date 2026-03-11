@@ -13,6 +13,8 @@ from utils.openai_client import OpenAIClient
 from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent, FactExtractorAgent, FactValidatorAgent, FactAlignmentAgent, ArgumentAgent, AdjudicatorAgent
 from utils.json_helper import extract_json
 import math
+import argparse
+
 
 def filter_by_majority_vote(
     facts: list[dict],
@@ -34,7 +36,30 @@ def filter_by_majority_vote(
         if accepted_count > threshold:
             filtered.append(fact)
 
-    return [fact['fact'] for fact in filtered]
+    # return [fact['fact'] for fact in filtered]
+    return filtered
+
+def format_facts(facts_overview):
+    # Initialize an empty dictionary to store the results
+    result = {}
+
+    # Iterate through the list of dictionaries
+    for fact_overview in facts_overview:
+        category = fact_overview["category"]
+        fact = fact_overview["fact"]
+        
+        # If the category is not in the result dictionary, add it with an empty list
+        if category not in result:
+            result[category] = []
+        
+        # Append the fact to the list for the appropriate category
+        result[category].append(fact)
+    text = ""
+    for key in result.keys():
+        text += f"{key}:\n-"
+        text += "\n-".join(result[key])
+        text += "\n\n"
+    return text
 
 def calculate_completeness(summary, facts):
     fact_alignment = fact_alignment_agent.check_alignment(facts, summary)
@@ -77,7 +102,6 @@ def create_summary_prompt_overview(summary_prompt):
         "factuality_scores" : factuality_scores,
         "total_score" : total_score
     }
-  
 
 load_dotenv() 
 
@@ -121,23 +145,38 @@ adjudicator_model_temp = int(os.environ.get('DEFAULT_ADJUDICATOR_MODEL_TEMP'))
 
 
 # Get paper file path from command line
-if len(sys.argv) < 7:
-    print(f"Usage: {sys.argv[0]} <input paper path> <output summary path> <number of iterations> <summary context> <factuality context> <translation context>")
-    sys.exit(1)
+parser = argparse.ArgumentParser(
+                    prog='summary.py',
+                    description='Creates a summary of a given scientific article'
+                    )
+
+
+parser.add_argument('-sc', '--summary-context', help='type of prompts to use for summary related agents', required=True)
+parser.add_argument('-fc', '--factuality-context', help='type of prompts to use for factuality related agents', required=True)
+parser.add_argument('-tc', '--translation-context', help='type of prompts to use for translation related agents', required=True)
+parser.add_argument('-it', '--iterations', help='number of iterations to perform', type=int, required=True)
+parser.add_argument('-i', '--input-file', help='path of the paper to summarize', required=True)
+parser.add_argument('-o', '--output-file', help='path of where the summary is stored', required=True)
+parser.add_argument('-oes', '--output-english-summary', help='path of where the untranslated summary is stored')
+parser.add_argument('-okf', '--output-key-facts', help='path of where the overview of key-facts are stored')
+
+args = parser.parse_args()
 
 
 # load a test paper, stored in markdown
-paper_file_path = sys.argv[1]
+paper_file_path = args.input_file
 with open(paper_file_path, "r") as file:
     paper = file.read()
 
-number_of_iterations = int(sys.argv[3])
+number_of_iterations = args.iterations
 
-output_path = sys.argv[2]
+output_path = args.output_file
+output_english_summary_path = args.output_english_summary
+output_key_facts_path = args.output_key_facts
 
-summary_context = sys.argv[4]
-factuality_context = sys.argv[5]
-translation_context = sys.argv[6]
+summary_context = args.summary_context
+factuality_context = args.factuality_context
+translation_context = args.translation_context
 
 
 # load prompt templates for the different agents
@@ -275,15 +314,16 @@ adjudicator_agent = AdjudicatorAgent(
 
 
 draft_facts = fact_extractor_agent.extract_facts(paper)
-print(draft_facts)
 
 draft_facts_validations = [fact_validator_agent.validate_facts(paper, draft_facts) for fact_validator_agent in fact_validator_agents]
-print(draft_facts_validations)
 
-facts = filter_by_majority_vote(draft_facts, draft_facts_validations)
+filtered_facts = filter_by_majority_vote(draft_facts, draft_facts_validations)
+formated_facts = format_facts(filtered_facts)
 
+facts = [fact['fact'] for fact in filtered_facts]
 
-print('\n'.join(facts)) 
+print("Formated facts")
+print(formated_facts)
 
 
 
@@ -324,4 +364,12 @@ print(f"Summary:\n{summary}")
 print(f"Translation:\n{translation}")
 
 with open(output_path, "w") as file:
-    file.write(f"Original summary:\n{summary}\n\nFinal Translation:\n{translation}")
+    file.write(translation)
+
+if output_english_summary_path:
+    with open(output_english_summary_path, "w") as file:
+        file.write(summary) 
+
+if output_key_facts_path:
+    with open(output_key_facts_path, "w") as file:
+        file.write(formated_facts)
