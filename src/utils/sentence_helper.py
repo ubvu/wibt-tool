@@ -1,4 +1,3 @@
-import nltk
 import re
 
 
