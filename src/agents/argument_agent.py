@@ -23,6 +23,6 @@ class ArgumentAgent(Agent):
         numbered_summary = '\n'.join(split_summary)
         print(numbered_summary)
         number_of_summary_lines = len(split_summary)
-        arguments = self.send_messages_structured([f"Paper:\n\n{numbered_paper}", f"Summary:\n\n{numbered_summary}\n\nPlease make sure to include an argument for all {number_of_summary_lines}lines."], Argument, number=number_of_summary_lines)
+        arguments = self.send_messages_structured([f"Paper:\n\n{numbered_paper}\n\nSummary:\n\n{numbered_summary}\n\nPlease make sure to include an argument for all {number_of_summary_lines}lines."], Argument, number=number_of_summary_lines)
 
         return arguments

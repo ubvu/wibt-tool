@@ -29,9 +29,7 @@ class AdjudicatorAgent(Agent):
 
         judgements = self.send_messages_structured(
             [
-                f"Paper:\n\n{numbered_paper}", 
-                f"Summary with {number_of_summary_lines} lines:\n\n{numbered_summary}", 
-                f"Arguments ({number_of_summary_lines}):\n\n{formatted_arguments}"
+                f"Paper:\n\n{numbered_paper}\n\nSummary with {number_of_summary_lines} lines:\n\n{numbered_summary}\n\nArguments ({number_of_summary_lines}):\n\n{formatted_arguments}"
             ], Judgement, 
             number=number_of_summary_lines
         )

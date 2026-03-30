@@ -10,6 +10,7 @@ from operator import itemgetter
 from dotenv import load_dotenv
 from utils.open_webui import OpenWebuiClient
 from utils.openai_client import OpenAIClient
+from utils.willma_client import WillmaClient
 from agents import Agent, SummaryAgent, ReadEvalAgent, RefinementAgent, TranslationDraftAgent, TranslationProofreadAgent, FactExtractorAgent, FactValidatorAgent, FactAlignmentAgent, ArgumentAgent, AdjudicatorAgent
 from utils.json_helper import extract_json
 import math
@@ -118,6 +119,11 @@ elif default_api == "OpenAI":
     token = os.environ.get('OPEN_AI_TOKEN')
     url = os.environ.get('OPEN_AI_URL')
     llm_endpoint = OpenAIClient(token, url)
+elif default_api == "Willma":
+    # use an OpenAI endpoint instead
+    token = os.environ.get('WILLMA_TOKEN')
+    url = os.environ.get('WILLMA_URL')
+    llm_endpoint = WillmaClient(token, url)
 
 
 summary_model = os.environ.get('DEFAULT_SUMMARY_MODEL')
