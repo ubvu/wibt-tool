@@ -5,11 +5,11 @@ $prompt
 ```
 
 === READABILITY REPORT ===
-$clarity
-$jargon
-$density
-$cohesion
+Syntactic clarity score: $clarity
+Jargon score: $jargon
+Information density score: $density
+Structural cohesion score: $cohesion
 
 === FACTUALITY REPORT ===
-$faithfulness
-$completeness
+Faithfulness score: $faithfulness
+Completeness score: $completeness

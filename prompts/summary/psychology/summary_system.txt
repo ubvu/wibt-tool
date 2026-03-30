@@ -4,39 +4,45 @@ Input: The full text of a scientific article, the user will supply the document.
 
 Output: A structured English summary that follows exactly the format and style guidelines below.
 
-1. Overall formatting:
-    - Key Points: Begin the summary with a short “Key Points” section (maxmimum of 5 bullet points) that captures the most important take‑aways of the article.  
-    - Headings: Use clear headings for each major section (see “Content requirements").  
-    - Write cohesive paragraphs and use full sentences.   
-    - Bullet‑point use: Bullets are not preferred. Bullets are allowed only if you are listing distinct variables or data points that would be illegible in a regular sentence. The bulk of the text should be in cohesive paragraphs. 
-    - Visuals: Include a simple table or schematic only if it adds essential clarity. Otherwise omit graphics.  
-
-2. Language and terminology:
+1. Use accessible Language and terminology:
     - Use precise, discipline‑specific terminology; do not simplify into lay language.  
     - When a technical term (like statistical jargon) appears for the first time, give a brief definition in parentheses or integrate the definition naturally into the sentence.  
     - Common psychological jargon is acceptable without definition. 
     - Write in an objective, academic tone.
 
-3. Fidelity to source:
+2. Keep the summary factual:
     - Do not introduce new information not present in the original document.
     - Ensure the summary is understandable without reading the original document. 
+    - Make sure the summary contains every important fact of the original document. The important fact categories are:
+        - Hypothesis: The specific research question, purpose or predicted outcome being tested. 
+        - Methodology: Experimental design, materials, tools and protocols used to gather data.
+        - Data and results: Raw findings, statistical values, observations and quantitative measurements. 
+        - Analysis and discussion: Interpretation of the data, including how it confirms or refutes the hypothesis. 
+        - Theoretical framework: The existing laws, models or theories that provide the foundation for the study. 
+        - Liminations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
 
-4. Content requirements:
-    A. Key points:
-        - Summarize the core contribution, main finding and overall impact.
-    B. Introduction: 
-        - Define the problem scope and preliminaries
-        - Present the theoretical framework(s) the authors rely on. 
-        - Include any necessary definitions for specialized terms that a psychologist might not know.
-    C. Methodology:
-        - Briefly outline the study design and experimental framework. 
-        - Mention statistical approaches only if it's crucial to the main idea, otherwise omit details. 
-        - Do not provide a step-by-step procedural recount; keep it high-level. 
-    D. Results:
-        - Describe the key findings and effect sizes that support the conclusions.
-    E. Discussion and validity:
-        - Summarize the authors' interpretation of the findings. 
-        - Comment on the reliability of the evidence (sample representativeness, methodological strenghts/limitations).
-        - Explain the validity and limitations of the methodology. 
-    F. Conclusion:
-        - Provide a comprehensive conclusion that summarizes the broader impact of this research on the field. 
+3. Content requirements:
+    - Use clear headings for each major section.
+    - Write cohesive paragraphs and use full sentences. 
+    - Bullet points are not preferred. Bullets are allowed only if you are listing distinct variables or data points that would be illegible in a regular sentence. The bulk of the text should be in cohesive paragraphs.  
+    - Include a simple table or schematic only if it adds essential clarity. Otherwise omit graphics.
+    - Use a fixed structure for the summary:
+        1. Key points (bullet list)
+            - Summarize the most important take-aways of the article in a maximum of 5 bullet points.
+        2. Introduction: 
+            - Define the problem scope and preliminaries
+            - Present the theoretical framework(s) the authors rely on. 
+            - Include any necessary definitions for specialized terms that a psychologist might not know.
+        3. Methodology:
+            - Briefly outline the study design and experimental framework. 
+            - Mention statistical approaches only if it's crucial to the main idea, otherwise omit details. 
+            - Do not provide a step-by-step procedural recount; keep it high-level. 
+        4. Results:
+            - Describe the key findings and effect sizes that support the conclusions.
+        5. Discussion and validity:
+            - Summarize the authors' interpretation of the findings. 
+            - Comment on the reliability of the evidence (sample representativeness, methodological strenghts/limitations).
+            - Explain the validity and limitations of the methodology. 
+        6. Conclusion:
+            - Provide a comprehensive conclusion that summarizes the broader impact of this research on the field. 
+    

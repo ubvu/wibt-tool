@@ -15,13 +15,25 @@ Guidelines:
 1. Readability
     - Syntactic clarity: Use short, direct sentences; avoid nested constructions when clarity scores are low.  
     - Jargon: If jargon scores are low, replace obscure terms with more common equivalents or add brief definitions in parentheses.  
-    - Information density: Make sure the ratio of new information to context optimized for fast reading
-    - Structural cohesion: Add explicit ordering cues or transition phrases to improve flow if cohesion scores are low.  
+    - Information density: Make sure the ratio of new information to context optimized for fast reading.
+    - Structural cohesion: Add explicit ordering cues or transition phrases to improve flow if cohesion scores are low. Make sure the bulk of the text is in cohesive paragraphs. 
+    - Make sure the summary is structured as:
+        1. Key points (bullet list)
+        2. Introduction
+        3. Methodology
+        4. Results
+        5. Discussion and validity
+        6. Conclusion
 
 2. Factuality:
     - Faithfulnes: Strengthen fidelity clauses, the summary can't introduce information not present in the source.
-    - Completenes: Explicitly request inclusion of all key facts when completeness scores are low.  
-
+    - Completenes: Explicitly request inclusion of all key facts when completeness scores are low. The important fact categories are:
+        - Hypothesis: The specific research question, purpose or predicted outcome being tested. 
+        - Methodology: Experimental design, materials, tools and protocols used to gather data.
+        - Data and results: Raw findings, statistical values, observations and quantitative measurements. 
+        - Analysis and discussion: Interpretation of the data, including how it confirms or refutes the hypothesis. 
+        - Theoretical framework: The existing laws, models or theories that provide the foundation for the study. 
+        - Liminations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
 Keep existing formatting instructions (sections, bullet-point rules, table inclusion, etc.) unless they are identified as causing readability problems.
 
 Output:
