@@ -22,6 +22,9 @@ class Agent:
         self.clear_messages()
 
 
+    def get_system_prompt(self):
+        return self.system_prompt
+
     def clear_messages(self):
         self.messages = [
           {
@@ -87,57 +90,3 @@ class Agent:
     def get_messages(self):
         return self.messages
 
-
-
-
-
-
-    
-
-# class TranslationAgent(Agent):
-#     def __init__(self, model, llm_endpoint, temperature, pre_draft_prompt, draft_prompt, refine_draft_prompt, proofread_prompt):
-#         super().__init__(model, "", llm_endpoint, temperature, history=-1)
-#         self.pre_draft_prompt = pre_draft_prompt
-#         self.draft_prompt = draft_prompt
-#         self.refine_draft_prompt = refine_draft_prompt
-#         self.proofread_prompt = proofread_prompt
-
-
-#     def _create_pre_draft(self):
-#         self.pre_draft = self._send_message(Template(self.pre_draft_prompt).substitute(paper=self.paper))
-
-
-#     def _create_draft(self):
-#         self.draft = self._send_message(Template(self.draft_prompt).substitute(paper=self.paper))
-
-
-#     def _create_refined_draft(self):
-#         self.refined_draft = self._send_message(self.refine_draft_prompt)
-
-
-#     def _create_proofread_translation(self):
-#         self.proofread_translation = self._send_message(Template(self.proofread_prompt).substitute(paper=self.paper, draft=self.draft, refined_draft=self.refined_draft))
-
-
-#     def translate(self, paper):
-#         self.clear_messages()
-#         self.paper = paper
-#         self._create_pre_draft()
-#         self._create_draft()
-#         self._create_refined_draft()
-
-#         self.clear_messages()
-#         self._create_proofread_translation()
-#         return self.proofread_translation
-    
-
-# class DirectTranslationAgent(Agent):
-#     def __init__(self, model, llm_endpoint, temperature, translation_prompt):
-#         super().__init__(model, "", llm_endpoint, temperature)
-#         self.translation_prompt = translation_prompt
-
-
-#     def translate(self, paper):
-#         return self._send_message(Template(self.translation_prompt).substitute(paper=paper))
-
-# lightllm proxy agents
