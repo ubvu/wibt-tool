@@ -28,4 +28,4 @@ class RefinementAgent(Agent):
         }
 
         result = self.send_messages_structured([Template(self.refine_prompt).substitute(prompt_information)], Prompt)
-        return result
+        return result['prompt']
