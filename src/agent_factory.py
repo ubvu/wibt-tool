@@ -4,7 +4,8 @@ from agents import (
     ReadEvalAgent, 
     RefinementAgent, 
     TranslationDraftAgent, 
-    TranslationProofreadAgent, 
+    TranslationProofreadAgent,
+    TranslationDirectAgent,
     FactExtractorAgent, 
     FactValidatorAgent, 
     FactAlignmentAgent, 
@@ -61,6 +62,15 @@ class AgentFactory:
             llm_endpoint=self.llm,
             model=self.config.draft.name,
             temperature=self.config.draft.temperature,
+            **prompts,
+        )
+
+    def create_translation_direct_agent(self, context) -> TranslationDirectAgent:
+        prompts = self.pm.get_translation_direct_prompts(context)
+        return TranslationDirectAgent(
+            llm_endpoint=self.llm,
+            model=self.config.translation_direct.name,
+            temperature=self.config.translation_direct.temperature,
             **prompts
         )
 

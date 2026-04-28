@@ -4,6 +4,7 @@ from .refinement_agent import RefinementAgent
 from .summary_agent import SummaryAgent
 from .translation_draft_agent import TranslationDraftAgent
 from .translation_proofread_agent import TranslationProofreadAgent
+from .translation_direct_agent import TranslationDirectAgent
 from .fact_extractor_agent import FactExtractorAgent
 from .fact_validator_agent import FactValidatorAgent
 from .fact_alignment_agent import FactAlignmentAgent
@@ -17,6 +18,7 @@ __all__ = [
     'SummaryAgent', 
     'TranslationDraftAgent',
     'TranslationProofreadAgent',
+    'TranslationDirectAgent',
     'FactExtractorAgent',
     'FactValidatorAgent',
     'FactAlignmentAgent',

@@ -16,10 +16,10 @@ class TranslationDraftAgent(Agent):
         self.refine_draft_prompt = refine_draft_prompt
 
 
-    def write_refined_draft(self, summary):
+    def write_refined_draft(self, summary, example_translation):
         self.clear_messages()
         pre_draft = self.send_message(Template(self.pre_draft_prompt).substitute(text=summary))
-        draft = self.send_message(Template(self.draft_prompt).substitute(text=summary))
+        draft = self.send_message(Template(self.draft_prompt).substitute(text=summary, example_translation=example_translation))
         refined_draft = self.send_message(self.refine_draft_prompt)
 
         return draft, refined_draft

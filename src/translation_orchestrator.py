@@ -12,10 +12,13 @@ class TranslationOrchestrator:
         # 1. Initialize Agents
         draft_agent = self.factory.create_translation_draft_agent(translation_ctx)
         proof_agent = self.factory.create_translation_proofread_agent(translation_ctx)
+        translation_direct_agent = self.factory.create_translation_direct_agent(translation_ctx)
 
         # 2. Drafting & Internal Refinement
         print("Step 1: Drafting and refining translation...")
-        draft, refined_draft = draft_agent.write_refined_draft(summary)
+        example_translation = translation_direct_agent.translate(summary)
+        print("Example translation created...")
+        draft, refined_draft = draft_agent.write_refined_draft(summary, example_translation)
 
         # 3. Proofreading
         print("Step 2: Proofreading translation...")

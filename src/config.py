@@ -38,6 +38,7 @@ class AppConfig:
     read_eval: ModelSettings
     draft: ModelSettings
     proofread: ModelSettings
+    translation_direct: ModelSettings
     fact_extractor: ModelSettings
     fact_alignment: ModelSettings
     advocate: ModelSettings
@@ -114,6 +115,7 @@ class AppConfig:
             read_eval=get_model_settings("READ_EVAL"),
             draft=get_model_settings("DRAFT"),
             proofread=get_model_settings("PROOFREAD"),
+            translation_direct=get_model_settings("DIRECT_TRANSLATION"),
             fact_extractor=get_model_settings("FACT_EXTRACTION"),
             fact_alignment=get_model_settings("ALIGNMENT"),
             advocate=get_model_settings("ADVOCATE"),

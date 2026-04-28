@@ -79,6 +79,13 @@ class PromptManager:
             "proofread_prompt": self._get_content_with_fallback(self.config.translation_dir, context, "proofread.txt"),
         }
 
+    def get_translation_direct_prompts(self, context: str) -> Dict[str, str]:
+        """Returns translate prompt."""
+        return {
+            "translate_direct_prompt": self._get_content_with_fallback(self.config.translation_dir, context, "direct_translation.txt"),
+        }
+
+
     # --- Factuality Related Prompts ---
 
     def get_fact_extractor_prompts(self, context: str) -> Dict[str, str]:
