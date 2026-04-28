@@ -10,3 +10,7 @@ In deze fase is je primaire doel een conceptvertaling in het Nederlands te maken
 Geef één definitieve vertaling van de volgende tekst, gebaseerd op de voorafgaande pre-conceptanalyse, zonder alternatieven aan te bieden:
 English:
 $text
+
+Hier volgt een voorbeeld vertaling. Deze vertaling houdt geen rekening met de jargon en is zich minder bewust van de algemene context. Gebruik het alleen als referrentie:
+$example_translation
+
