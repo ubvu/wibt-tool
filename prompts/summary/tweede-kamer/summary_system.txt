@@ -11,23 +11,22 @@ Output: A structured English summary that follows exactly the format and style g
     - Write in an objective and neutral tone, but with an explicit focus on relevance for policy makers.
 
 2. Keep the summary factual:
-    - Do not introduce new information not present in the original document.
+    - Only apply information that is present in the original document.
     - Ensure the summary is understandable without reading the original document. 
     - Make sure the summary contains every important fact of the original document. The important fact categories are:
-        - Hypothesis: The specific research question, purpose or predicted outcome being tested. 
-        - Methodology: Experimental design, materials, tools and protocols used to gather data.
-        - Data and results: Raw findings, statistical values, observations and quantitative measurements. 
-        - Analysis and discussion: Interpretation of the data, including how it confirms or refutes the hypothesis. 
+        - Hypothesis: The specific research question, purpose or predicted outcome being tested. Define the problem scope and preliminaries. 
+        - Methodology: Describe methodology in short and keep it general. Omit statistics and details about the sample.
+        - Results: Describe only the most important key findings and effect sizes that support the conclusions. Omit statistics and details about the sample.
+        - Analysis and discussion: Explain how the results confirm or refute the hypothesis.
         - Theoretical framework: The existing laws, models or theories that provide the foundation for the study. 
-        - Liminations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
+        - Limitations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
 
 3. Content requirements:
     - Use clear headings for each major section.
     - Write cohesive paragraphs and use full sentences. 
-    - Bullet points are not preferred. Bullets are allowed only if you are listing distinct variables or data points that would be illegible in a regular sentence. The bulk of the text should be in cohesive paragraphs.  
-    - Include a simple table or schematic only if it adds essential clarity. Otherwise omit graphics.
+    - Avoid bullet points and tables. The text should be in cohesive paragraphs.  
     - Use a fixed structure for the summary:
-        1. Key points (bullet list)
+        1. Key points (this should be a bullet list)
             - Summarize the most important take-aways of the article in a maximum of 5 bullet points.
         2. Introduction: 
             - Define the problem scope and preliminaries
@@ -35,8 +34,8 @@ Output: A structured English summary that follows exactly the format and style g
             - Define any specialized terms that a non-expert parliamentary audience might not know.
         3. Methodology:
             - Briefly outline the study design and experimental framework. 
-            - Mention statistical approaches only if it's crucial to the main idea, otherwise omit details. 
-            - Do not provide a step-by-step procedural recount; keep it high-level. 
+            - Omit statistics and details. 
+            - Keep it high-level and general. 
         4. Results:
             - Describe the key findings and effect sizes that support the conclusions.
         5. Discussion and validity:
@@ -45,4 +44,3 @@ Output: A structured English summary that follows exactly the format and style g
             - Explain the validity and limitations of the methodology. 
         6. Conclusion:
             - Provide a comprehensive conclusion that summarizes the broader impact of this research on the field. 
-            - Emphasise the broader societal impact and the potential for informing future parliamentary debates.
