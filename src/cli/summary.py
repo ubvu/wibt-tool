@@ -128,4 +128,4 @@ if output_score_history_path:
 
 if output_key_facts_path:
     with open(output_key_facts_path, "w") as file:
-        file.write(formated_facts)
+        json.dump(summary_orchestrator._validated_facts, file)
