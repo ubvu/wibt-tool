@@ -7,122 +7,110 @@ import sys
 def main():
     # 1. Set up Command Line Argument Parsing
     parser = argparse.ArgumentParser(
-        description="Compare two score history CSV files (refine and static) using an interactive Plotly graph."
+        description="Compare 4 datasets (2 models x 2 methods) where each combo has a unique color."
     )
     parser.add_argument(
         "base_path", 
-        help="The base path and filename prefix (e.g., '/path/to/file' will look for '/path/to/file_refine.csv' and '/path/to/file_static.csv')"
+        help="Base path prefix (e.g., '/path/to/file' looks for '/path/to/file_gemma3_refine.csv', etc.)"
     )
     
     args = parser.parse_args()
-    
-    # 2. Construct the full file paths
-    refine_path = f"{args.base_path}_refine.csv"
-    static_path = f"{args.base_path}_static.csv"
+    base = args.base_path
 
-    # 3. Validate that both files actually exist before proceeding
+    # 2. Define the 4 combinations and their unique color assignments
+    # Colors: Blue/Cyan for Gemma, Red/Magenta for GPT-OSS
+    combinations = [
+        ('gemma3', 'refine', '#0000FF'),  # Pure Blue
+        ('gemma3', 'static', '#00FFFF'),  # Cyan
+        ('gpt-oss', 'refine', '#FF0000'), # Red
+        ('gpt-oss', 'static', '#FF00FF'), # Magenta
+    ]
+    
+    models = ['gemma3', 'gpt-oss']
+    methods = ['refine', 'static']
+    
+    data_store = {}
     missing_files = []
-    if not os.path.exists(refine_path):
-        missing_files.append(refine_path)
-    if not os.path.exists(static_path):
-        missing_files.append(static_path)
+
+    # 3. Load the 4 files
+    for model, method, color in combinations:
+        filename = f"{base}_{method}_{model}.csv"
+        if os.path.exists(filename):
+            try:
+                data_store[(model, method)] = pd.read_csv(filename)
+                print(f"Successfully loaded: {filename}")
+            except Exception as e:
+                print(f"Error reading {filename}: {e}")
+        else:
+            missing_files.append(filename)
 
     if missing_files:
-        print("Error: The following files could not be found:")
+        print("\nError: The following files are missing:")
         for f in missing_files:
             print(f"  - {f}")
         sys.exit(1)
 
-    # 4. Load the data
-    print(f"Loading Refine: {refine_path}")
-    df_refine = pd.read_csv(refine_path)
-    print(f"Loading Static: {static_path}")
-    df_static = pd.read_csv(static_path)
-
-    # Define columns
+    # Constants
     score_columns = ['syntactic_clarity', 'jargon', 'information_density', 
                      'structural_cohesion', 'faithfulness', 'completeness']
     total_column = 'total_score'
+    markers = ['circle', 'square', 'triangle-up', 'diamond', 'cross', 'star']
 
-    # 5. Create the Figure
+    # 4. Create Figure
     fig = go.Figure()
 
-    # Color sequence for metrics
-    colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA', '#FFA15A', '#19D3F3']
-
-    # 6. Add Metric Traces (Comparison Logic)
-    for i, col in enumerate(score_columns):
-        color = colors[i % len(colors)]
+    # 5. Plotting Loop
+    for model, method, combo_color in combinations:
+        df = data_store[(model, method)]
+        combo_name = f"{method}_{model}"
         
-        # Add Refine Metric (Solid Line)
+        # A. Plot Individual Metrics (Thin & Transparent)
+        for i, col in enumerate(score_columns):
+            fig.add_trace(
+                go.Scatter(
+                    x=df.index,
+                    y=df[col],
+                    mode='lines+markers',
+                    name=f"{combo_name} - {col}",
+                    line=dict(color=combo_color, width=1.5),
+                    marker=dict(symbol=markers[i % len(markers)], size=5),
+                    opacity=0.5,  # Make metrics faded so they don't overwhelm the total
+                    yaxis='y1'
+                )
+            )
+        
+        # B. Plot Total Score (Thick & Bold)
+        # This is the "Identity" line for this combination
         fig.add_trace(
             go.Scatter(
-                x=df_refine.index, 
-                y=df_refine[col],
+                x=df.index,
+                y=df[total_column],
                 mode='lines+markers',
-                name=f'Refine: {col}',
-                line=dict(color=color, dash='solid'),
-                yaxis='y1'
-            )
-        )
-        
-        # Add Static Metric (Dashed Line)
-        fig.add_trace(
-            go.Scatter(
-                x=df_static.index, 
-                y=df_static[col],
-                mode='lines+markers',
-                name=f'Static: {col}',
-                line=dict(color=color, dash='dash'),
-                yaxis='y1'
+                name=f"TOTAL: {combo_name}",
+                line=dict(color=combo_color, width=5),
+                marker=dict(symbol='diamond', size=12),
+                yaxis='y2'
             )
         )
 
-    # 7. Add Total Score Traces (The heavy hitters)
-    # Refine Total: Thick Black
-    fig.add_trace(
-        go.Scatter(
-            x=df_refine.index, 
-            y=df_refine[total_column],
-            mode='lines+markers',
-            name='TOTAL (Refine)',
-            line=dict(color='black', width=5),
-            marker=dict(symbol='square'),
-            yaxis='y2'
-        )
-    )
-
-    # Static Total: Thick Grey
-    fig.add_trace(
-        go.Scatter(
-            x=df_static.index, 
-            y=df_static[total_column],
-            mode='lines+markers',
-            name='TOTAL (Static)',
-            line=dict(color='grey', width=5, dash='dot'),
-            marker=dict(symbol='diamond'),
-            yaxis='y2'
-        )
-    )
-
-    # 8. Configure Layout (Dual Axes and Scales)
+    # 6. Configure Layout
     fig.update_layout(
-        title='Comparison: Refine vs. Static Score History',
+        title='Comprehensive Comparison: 4-Way Model/Method Breakdown',
         xaxis=dict(title='Row Index'),
         
-        # Left Y-Axis (Metrics 0-5)
+        # Left Y-Axis: Metrics (Scale 0-5)
         yaxis=dict(
-            title=dict(text='Individual Metric Scores', font=dict(color='blue')),
+            title=dict(text='Metric Scores (Faded)', font=dict(color='blue')),
             tickfont=dict(color='blue'),
             range=[0, 5],
             gridcolor='lightgray'
         ),
         
-        # Right Y-Axis (Totals 0-25)
+        # Right Y-Axis: Totals (Scale 0-30)
         yaxis2=dict(
-            title=dict(text='Total Score', font=dict(color='black')),
+            title=dict(text='Total Score (Bold)', font=dict(color='black')),
             tickfont=dict(color='black'),
-            range=[0, 25],
+            range=[0, 30], # Updated to 30 as requested
             overlaying='y',
             side='right'
         ),
@@ -132,14 +120,16 @@ def main():
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1
+            x=1,
+            font=dict(size=9)
         ),
         
         template='plotly_white',
         hovermode='x unified'
     )
 
-    # 9. Show the plot
+    # 7. Show
+    print("\nGenerating interactive graph in your browser...")
     fig.show()
 
 if __name__ == "__main__":
