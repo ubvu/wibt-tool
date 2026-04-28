@@ -1,6 +1,0 @@
-Input Data:
-=== ORIGINAL PAPER ===
-$paper
-
-=== SUMMARY TO RATE ===
-$summary
