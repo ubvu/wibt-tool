@@ -2,13 +2,14 @@ Your task is to identify domain-specific key facts within the document provided 
 
 <instructions>
 1. Identify Key-facts: Extract all key-facts from the text. Each key-fact should:
+    - Be an important fact to make an informative summary of the research. You will receveive a punishment score for each trivial fact. 
     - Be a complete sentence with a subject, verb, and object/complement.
     - Contain only one action, event, or idea. Avoid compound sentences.
-    - Include no more than two or three entities per key fact. If there are more than three entities, divide them into separate sentences.
+    - Include one to three entities per key fact. If there are more than three entities, divide them into separate sentences.
     - Present temporal information (e.g., when, how long) as standalone sentences.
     - Present causal relationships (e.g., reasons, consequences) as standalone sentences.
     - Avoid using linking words like ’and,’ ’but,’ ’then,’ or ’because.’ Each idea must be presented as an independent fact.
-    - Do not combine related details, even implicitly. Each sentence must describe exactly one action, idea, or relationship.
+    - Each sentence must describe exactly one action, idea, or relationship.
 2. Here are the examples of key-fact structure granularity:
     - Text Example: The resolution authorizes the operation of one winter shelter from December 1st, 2019, to March 31st, 2020.
     - Key-facts (Revised):
@@ -18,31 +19,32 @@ Your task is to identify domain-specific key facts within the document provided 
     - Key-facts (Revised):
         (a) The property for the winter shelter was purchased.
         (b) Homeless emergency aid program funding was used for the purchase.
-3. Categorize Key-facts:
+4. Categorize Key-facts:
     - Define your own categories for the key-facts based on content.
     - Assign each key-fact to a category.
-4. Compare Categories:
+5. Compare Categories:
     - Compare your defined categories with the provided key-fact categories.
-    - Adjust any key-fact to better align with the provided categories.
-5. Validate Key-facts
+    - Adjust any key-fact to better align with the provided categories. If the fact is not in line with the descriptions of the provided categories, omit the fact.
+6. Validate Key-facts
     - Ensure each key-fact meets the following criteria:
         - Correctly categorized.
         - Atomicity: Conveys only one action, event, or idea.
         - Clarity: Is concise and clear, avoiding ambiguity.
-        - Brevity: Contains no unnecessary details.
-        - Non-overlapping: Does not duplicate information in other facts.
+        - Brevity: Keep the text general and useful for a summary. 
+        - Non-overlapping: Describe each fact only once. 
+        - Non trivial: You will receive a punishment score for each trivial fact which is not relevant for the summary.
     - Finalize key facts that satisfy these conditions.
 </instructions>
 
 <category>
 Here are the provided Key Fact Categories and Descriptions:
 
-Hypothesis: The specific research question, purpose or predicted outcome being tested. 
-Methodology: Experimental design, materials, tools and protocols used to gather data.
-Data and results: Raw findings, statistical values, observations and quantitative measurements. 
-Analysis and discussion: Interpretation of the data, including how it confirms or refutes the hypothesis. 
+Hypothesis: The specific research question, purpose or predicted outcome being tested. Define the problem scope and preliminaries. 
+Methodology: Describe methodology in short and keep it general. Omit statistics and details about the sample.
+Results: Describe only the most important key findings and effect sizes that support the conclusions. Omit statistics and details about the sample.
+Analysis and discussion: Explain how the results confirm or refute the hypothesis. 
 Theoretical framework: The existing laws, models or theories that provide the foundation for the study. 
-Liminations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
+Limitations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
 
 </category>
 
@@ -51,7 +53,7 @@ Here is an example for each category.
 
 Hypothesis: Researchers predicted a decrease in shell thickness.
 Methodology: Researchers exposed 100 mussels to pH 7.5 seawater.
-Data and Results: The experimental group showed a 15% reduction in shell density.
+Results: The experimental group showed a 15% reduction in shell density.
 Analysis and Discussion: Lower pH levels interfere with the calcification process.
 Theoretical Framework: Ocean acidification is driven by atmospheric CO2 absorption.
 Limitations and Future Work: The impact of ocean warming remains unknown.
@@ -80,3 +82,4 @@ An example of the format:
 ]
 
 The user will provide you the document.
+

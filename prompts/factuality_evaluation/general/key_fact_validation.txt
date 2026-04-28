@@ -1,6 +1,6 @@
-You will receive a Document and a set of Key-facts sentences that contain essential pieces of information from the Source Document. Your task is to identify if each Key-Fact Sentence is useful for making a summary of the Source Document.
+You will receive a Document and a set of Key-facts sentences that contain essential pieces of information from the Source Document. Your task is to identify if each Key-Fact Sentence is useful for making an informative summary of the Source Document.
 
-Reasons a Key-Fact Sentence may NOT be useful:
+Reasons a Key-Fact Sentence is useless:
 Reason 1: Trivial Information: The sentence contains correct but insignificant details that do not contribute meaningfully to the main points of the Source Document.
     - Example: The Source Document is a business meeting transcript, but the Key-Fact Sentence is "Speaker A said ’Good afternoon.’"
     - Explanation: While accurate, this detail doesn’t enhance understanding of the meeting’s objectives or outcomes.
@@ -10,16 +10,16 @@ Reason 2: Incorrect Information: The sentence includes factual errors or discrep
 Reason 3: Irrelevant Information: The sentence is unrelated to the content of the Source Document.
     - Example: The Source Document is about artificial intelligence, but the Key-Fact Sentence discusses a dog barking loudly.
     - Explanation: The sentence doesn’t pertain to the topic of the Source Document.
-Reason 4: Category Alignment: The sentence is incorrectly categorized.
+Reason 4: Category Misalignment: The sentence is incorrectly categorized.
     - Example: A sentence about future plans is categorized as "Factual Information" when it should be "Proposals"
     - Explanation: The content of the sentence doesn’t match the characteristics of its assigned category.
-Reason 5: Domain Relevance: The information in the sentence, while accurate and properly categorized, is not essential for summarizing this type of document.
+Reason 5: Irrelevant for domain: The information in the sentence, while accurate and properly categorized, is not essential for summarizing this type of document.
     - Example: In a meeting minutes document discussing a major company merger, a sentence about routine office maintenance schedule categorizing as "Factual Information"
     - Explanation: Although this information is accurate and properly categorized as "Factual Information", it’s not essential for understanding the key points of a merger discussion meeting.
 
 Here are the Instructions for Key-facts validation:
 1. Read a Document and a set of Key-facts sentences carefully.
-2. Evaluate each Key-facts sentence based on the five reasons above.
+2. Evaluate each Key-facts sentence based on the five reasons above. Be very strict about trivial information. We want an informative summary.
 3. According to evaluation, if the Key-facts sentence is useful for making a summary of the Source Document, response "Yes", otherwise response "No"
 4. Provide a single sentence explaining why the Key-facts sentence is useful for making a summary.
 
@@ -27,12 +27,12 @@ This is a list of the categories.
 <category>
 Here are the provided Key Fact Categories and Descriptions:
 
-Hypothesis: The specific research question, purpose or predicted outcome being tested. 
-Methodology: Experimental design, materials, tools and protocols used to gather data.
-Data and results: Raw findings, statistical values, observations and quantitative measurements. 
-Analysis and discussion: Interpretation of the data, including how it confirms or refutes the hypothesis. 
+Hypothesis: The specific research question, purpose or predicted outcome being tested. Define the problem scope and preliminaries. 
+Methodology: Describe methodology in short and keep it general. Omit statistics and details about the sample.
+Results: Describe only the most important key findings and effect sizes that support the conclusions. Omit statistics and details about the sample.
+Analysis and discussion: Explain how the results confirm or refute the hypothesis. 
 Theoretical framework: The existing laws, models or theories that provide the foundation for the study. 
-Liminations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
+Limitations and future work: potential biases, errors in the study and suggested directions for subsequent research. 
 
 </category>
 
@@ -42,7 +42,7 @@ Here is an example for each category.
 
 Hypothesis: Researchers predicted a decrease in shell thickness.
 Methodology: Researchers exposed 100 mussels to pH 7.5 seawater.
-Data and Results: The experimental group showed a 15% reduction in shell density.
+Results: The experimental group showed a 15% reduction in shell density.
 Analysis and Discussion: Lower pH levels interfere with the calcification process.
 Theoretical Framework: Ocean acidification is driven by atmospheric CO2 absorption.
 Limitations and Future Work: The impact of ocean warming remains unknown.
