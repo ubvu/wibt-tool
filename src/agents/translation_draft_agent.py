@@ -3,7 +3,7 @@ from string import Template
 
 
 class TranslationDraftAgent(Agent):
-    def __init__(self, llm_endpoint, model, system_prompt, pre_draft_prompt, draft_prompt, refine_draft_prompt, temperature=0, history=-1):
+    def __init__(self, llm_endpoint, model, system_prompt, draft_prompt, temperature=0, history=-1, **kwargs):
         super().__init__(
             llm_endpoint=llm_endpoint, 
             model=model, 
@@ -11,15 +11,7 @@ class TranslationDraftAgent(Agent):
             temperature=temperature, 
             history=history
         )
-        self.pre_draft_prompt = pre_draft_prompt
         self.draft_prompt = draft_prompt
-        self.refine_draft_prompt = refine_draft_prompt
 
-
-    def write_refined_draft(self, summary, example_translation):
-        self.clear_messages()
-        pre_draft = self.send_message(Template(self.pre_draft_prompt).substitute(text=summary))
-        draft = self.send_message(Template(self.draft_prompt).substitute(text=summary, example_translation=example_translation))
-        refined_draft = self.send_message(self.refine_draft_prompt)
-
-        return draft, refined_draft
+    def draft(self, summary, example_translation):
+        return self.send_message(Template(self.draft_prompt).substitute(text=summary, example_translation=example_translation))

@@ -36,7 +36,9 @@ class AppConfig:
     summary: ModelSettings
     refinement: ModelSettings
     read_eval: ModelSettings
+    pre_draft: ModelSettings
     draft: ModelSettings
+    refine_draft: ModelSettings
     proofread: ModelSettings
     translation_direct: ModelSettings
     fact_extractor: ModelSettings
@@ -113,7 +115,9 @@ class AppConfig:
             summary=get_model_settings("SUMMARY"),
             refinement=get_model_settings("REFINEMENT"),
             read_eval=get_model_settings("READ_EVAL"),
+            pre_draft=get_model_settings("PREDRAFT"),
             draft=get_model_settings("DRAFT"),
+            refine_draft=get_model_settings("REFINE_DRAFT"),
             proofread=get_model_settings("PROOFREAD"),
             translation_direct=get_model_settings("DIRECT_TRANSLATION"),
             fact_extractor=get_model_settings("FACT_EXTRACTION"),
