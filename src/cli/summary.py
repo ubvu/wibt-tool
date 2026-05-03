@@ -56,7 +56,7 @@ with open(paper_file_path, "r") as file:
 
 number_of_iterations = args.iterations
 
-output_path = args.output_file
+output_translated_summary = args.output_translated_summary
 output_english_summary_path = args.output_english_summary
 output_key_facts_path = args.output_key_facts
 output_history_path = args.output_history
@@ -69,7 +69,6 @@ translation_context = args.translation_context
 search_method = args.search_type
 
 summary_orchestrator = SummaryOrchestrator(agent_factory, prompt_manager, config, search_method)
-translation_orchestrator = TranslationOrchestrator(agent_factory, config)
 
 
 summary_result = summary_orchestrator.run(
@@ -82,18 +81,24 @@ summary_result = summary_orchestrator.run(
 summary = summary_result['summary']
 
 
-translation = translation_orchestrator.run(
-    summary=summary, 
-    translation_ctx=translation_context
-)
 
 
 print(f"Summary:\n{summary}")
-print(f"Translation:\n{translation}")
 
+if output_translated_summary:
+    
+    translation_orchestrator = TranslationOrchestrator(agent_factory, config)
 
-with open(output_path, "w") as file:
-    file.write(translation)
+    translation = translation_orchestrator.run(
+        summary=summary, 
+        translation_ctx=translation_context
+    )
+
+    print(f"Translation:\n{translation}")
+
+    with open(output_translated_summary, "w") as file:
+        file.write(translation)
+
 
 if output_english_summary_path:
     with open(output_english_summary_path, "w") as file:
