@@ -30,6 +30,7 @@ parser.add_argument('-it', '--iterations', help='number of iterations to perform
 parser.add_argument('-i', '--input-file', help='path of the paper to summarize', required=True)
 parser.add_argument('-ot', '--output-translated-summary', help='path of where the translated summary is stored')
 parser.add_argument('-st', '--search-type', help='whether to use prompt refinement (refine) or to use a static prompt (static)', required=True)
+parser.add_argument('-pf', '--provide-facts', help='whether to provide the keyfacts to generate the summary',action='store_true')
 parser.add_argument('-oes', '--output-english-summary', help='path of where the untranslated summary is stored')
 parser.add_argument('-okf', '--output-key-facts', help='path of where the overview of key-facts are stored')
 parser.add_argument('-oh', '--output-history', help='path of where the history is stored')
@@ -67,8 +68,9 @@ factuality_context = args.factuality_context
 translation_context = args.translation_context
 
 search_method = args.search_type
+provide_facts = args.provide_facts
 
-summary_orchestrator = SummaryOrchestrator(agent_factory, prompt_manager, config, search_method)
+summary_orchestrator = SummaryOrchestrator(agent_factory, prompt_manager, config, search_method, provide_facts)
 
 
 summary_result = summary_orchestrator.run(
