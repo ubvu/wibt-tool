@@ -28,7 +28,7 @@ parser.add_argument('-fc', '--factuality-context', help='type of prompts to use 
 parser.add_argument('-tc', '--translation-context', help='type of prompts to use for translation related agents', required=True)
 parser.add_argument('-it', '--iterations', help='number of iterations to perform', type=int, required=True)
 parser.add_argument('-i', '--input-file', help='path of the paper to summarize', required=True)
-parser.add_argument('-o', '--output-file', help='path of where the summary is stored', required=True)
+parser.add_argument('-ot', '--output-translated-summary', help='path of where the translated summary is stored')
 parser.add_argument('-st', '--search-type', help='whether to use prompt refinement (refine) or to use a static prompt (static)', required=True)
 parser.add_argument('-oes', '--output-english-summary', help='path of where the untranslated summary is stored')
 parser.add_argument('-okf', '--output-key-facts', help='path of where the overview of key-facts are stored')
