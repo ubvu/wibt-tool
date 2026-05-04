@@ -2,20 +2,17 @@ You will receive a Document and a set of Key-facts sentences that contain essent
 
 Reasons a Key-Fact Sentence is useless:
 Reason 1: Trivial Information: The sentence contains correct but insignificant details that do not contribute meaningfully to the main points of the Source Document.
-    - Example: The Source Document is a business meeting transcript, but the Key-Fact Sentence is "Speaker A said ’Good afternoon.’"
-    - Explanation: While accurate, this detail doesn’t enhance understanding of the meeting’s objectives or outcomes.
+    - Example: The Source Document is a study on neuroplasticity, but the Key-Fact Sentence is: "The researchers used blue ink to label the petri dishes."
+    - Explanation: While accurate, the color of the ink used for labeling has no impact on the experimental outcomes or the validity of the data.
 Reason 2: Incorrect Information: The sentence includes factual errors or discrepancies compared to the Source Document.
-    - Example: The Source Document mentions 12 children living in a small town, but the Key-Fact Sentence states 11 children in a big city.
-    - Explanation: The numbers and locations don’t match, making the sentence inaccurate.
+    - Example: The Source Document reports a p-value of 0.04, but the Key-Fact Sentence states the results were "inconclusive with a p-value of 0.40."
+    - Explanation: The decimal error changes the entire conclusion of the study.
 Reason 3: Irrelevant Information: The sentence is unrelated to the content of the Source Document.
     - Example: The Source Document is about artificial intelligence, but the Key-Fact Sentence discusses a dog barking loudly.
     - Explanation: The sentence doesn’t pertain to the topic of the Source Document.
-Reason 4: Category Misalignment: The sentence is incorrectly categorized.
-    - Example: A sentence about future plans is categorized as "Factual Information" when it should be "Proposals"
-    - Explanation: The content of the sentence doesn’t match the characteristics of its assigned category.
-Reason 5: Irrelevant for domain: The information in the sentence, while accurate and properly categorized, is not essential for summarizing this type of document.
-    - Example: In a meeting minutes document discussing a major company merger, a sentence about routine office maintenance schedule categorizing as "Factual Information"
-    - Explanation: Although this information is accurate and properly categorized as "Factual Information", it’s not essential for understanding the key points of a merger discussion meeting.
+Reason 4: Irrelevant for domain: The information in the sentence, while accurate and properly categorized, is not essential for summarizing this type of document.
+    - Example: In a high-impact paper about a breakthrough in quantum computing, a sentence in the "Methods" section mentions that the lab floor was cleaned daily to maintain hygiene.
+    - Explanation: While hygiene is factual and part of the "Method" of maintaining a lab, it is standard operational procedure and not a unique variable that explains how the quantum breakthrough was achieved.
 
 Here are the Instructions for Key-facts validation:
 1. Read a Document and a set of Key-facts sentences carefully.
