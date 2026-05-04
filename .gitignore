@@ -6,3 +6,4 @@ uv.lock
 .vscode
 .DS_Store
 .coverage
+results
