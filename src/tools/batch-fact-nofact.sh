@@ -3,22 +3,6 @@
 # --- CONFIGURATION: Add your pairs here ---
 # Format: paper_name_without_extension|context_string
 INPUT_DATA="
-2024.04.19.24304365v1.full|general
-3716553.3750816|psychology
-CLS_Transnationalism in the Works of Cornélie Huygens_v2|general
-EVOSTAR_2026_hexacopters (3)|tweede-kamer
-Final Paper_Transnationalism and Cornélie Huygens_CJS|general
-Infancy - 2022 - Chen - Infant locomotion shapes proximity to adults during everyday play in the U S|psychology
-Korthals Altes (2023) belonging online classrooms|psychology
-PP___Is_there_a_paradox_in_blockchain_governance____CBI__Lisbon_|tweede-kamer
-PP___The_Human_Factor_in_blockchain_governance___CBA__Lille_|tweede-kamer
-PROOFREAD|general
-Reallocation_not_expansion|tweede-kamer
-Rosbrook_2025_Shorttermheatacclimationcarbohydrates_MSSE|general
-Short_sale_collateral|tweede-kamer
-WCCI_2026_LamarkianLimits (1)|tweede-kamer
-Willemse et al (2025) Cross-faculty perspectives of teachers on inclusive higher education  a university-wide study in the Netherlands|psychology
-zsz156|general
 "
 # ------------------------------------------
 
