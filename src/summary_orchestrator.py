@@ -5,11 +5,12 @@ from concurrent.futures import ThreadPoolExecutor
 import concurrent.futures
 
 class SummaryOrchestrator:
-    def __init__(self, factory, prompt_manager, config, method):
+    def __init__(self, factory, prompt_manager, config, search_method, provide_facts):
         self.factory = factory
         self.pm = prompt_manager
         self.config = config
-        self.method = method
+        self.search_method = search_method
+        self.provide_facts = provide_facts
         
         self._history: List[Dict[str, Any]] = []
         self._iteration: int = 0
@@ -32,12 +33,17 @@ class SummaryOrchestrator:
 
         if not self._is_initialized or self._paper != paper:
             print("Starting a new session")
+            print(f"Provide facts:{self.provide_facts}")
+            if self.provide_facts:
+                self._extract_facts(paper, extractor_agent, validator_agents)
+                summary = summary_agent.generate_summary(paper, self._validated_facts)
+            else:
+                with ThreadPoolExecutor() as executor:
+                    summary_future = executor.submit(summary_agent.generate_summary, paper)
+                    extracted_facts_done_future = executor.submit(self._extract_facts, paper, extractor_agent, validator_agents)
+                    summary = summary_future.result()
+                    extracted_facts_done_future.result()
 
-            with ThreadPoolExecutor() as executor:
-                summary_future = executor.submit(summary_agent.generate_summary, paper)
-                extracted_facts_done_future = executor.submit(self._extract_facts, paper, extractor_agent, validator_agents)
-                summary = summary_future.result()
-                extracted_facts_done_future.result()
 
 
             eval_data = self._initialize_session(
@@ -69,7 +75,7 @@ class SummaryOrchestrator:
                 break
 
             print(f"Iteration {self._iteration + 1} (Best Score: {top_prompt['total_score']})")
-            if self.method == "refine":
+            if self.search_method == "refine":
                 new_prompt = refinement_agent.refine(
                     top_prompt['prompt'], 
                     top_prompt['readability_scores'], 
@@ -77,12 +83,16 @@ class SummaryOrchestrator:
                 )
                 summary_agent.set_system_prompt(new_prompt)
 
-            elif self.method == "static":
+            elif self.search_method == "static":
                 new_prompt = summary_agent.get_system_prompt()
 
             else:
                 raise ValueError("The search type must be either 'refine' or 'static'")
-            summary = summary_agent.generate_summary(paper)
+
+            if self.provide_facts:
+                summary = summary_agent.generate_summary(paper, self._validated_facts)
+            else:
+                summary = summary_agent.generate_summary(paper)
 
             eval_data = self._evaluate_prompt(
                 self._paper,

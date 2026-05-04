@@ -10,7 +10,9 @@ class TranslationOrchestrator:
         print(f"Starting translation pipeline using context: '{translation_ctx}'")
         
         # 1. Initialize Agents
+        pre_draft_agent = self.factory.create_translation_pre_draft_agent(translation_ctx)
         draft_agent = self.factory.create_translation_draft_agent(translation_ctx)
+        refine_agent = self.factory.create_translation_refine_draft_agent(translation_ctx)
         proof_agent = self.factory.create_translation_proofread_agent(translation_ctx)
         translation_direct_agent = self.factory.create_translation_direct_agent(translation_ctx)
 
@@ -18,7 +20,17 @@ class TranslationOrchestrator:
         print("Step 1: Drafting and refining translation...")
         example_translation = translation_direct_agent.translate(summary)
         print("Example translation created...")
-        draft, refined_draft = draft_agent.write_refined_draft(summary, example_translation)
+        
+        # Pre-draft
+        pre_draft = pre_draft_agent.pre_draft(summary)
+        
+        # Draft
+        draft_agent.set_messages(pre_draft_agent.get_messages())
+        draft = draft_agent.draft(summary, example_translation)
+        
+        # Refine
+        refine_agent.set_messages(draft_agent.get_messages())
+        refined_draft = refine_agent.refine()
 
         # 3. Proofreading
         print("Step 2: Proofreading translation...")

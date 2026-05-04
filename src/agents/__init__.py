@@ -2,7 +2,9 @@ from .agent import Agent
 from .read_eval_agent import ReadEvalAgent
 from .refinement_agent import RefinementAgent
 from .summary_agent import SummaryAgent
+from .translation_pre_draft_agent import TranslationPreDraftAgent
 from .translation_draft_agent import TranslationDraftAgent
+from .translation_refine_draft_agent import TranslationRefineDraftAgent
 from .translation_proofread_agent import TranslationProofreadAgent
 from .translation_direct_agent import TranslationDirectAgent
 from .fact_extractor_agent import FactExtractorAgent
@@ -16,7 +18,9 @@ __all__ = [
     'ReadEvalAgent', 
     'RefinementAgent', 
     'SummaryAgent', 
+    'TranslationPreDraftAgent',
     'TranslationDraftAgent',
+    'TranslationRefineDraftAgent',
     'TranslationProofreadAgent',
     'TranslationDirectAgent',
     'FactExtractorAgent',

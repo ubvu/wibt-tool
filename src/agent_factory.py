@@ -3,8 +3,10 @@ from agents import (
     SummaryAgent, 
     ReadEvalAgent, 
     RefinementAgent, 
+    TranslationPreDraftAgent,
     TranslationDraftAgent, 
-    TranslationProofreadAgent,
+    TranslationRefineDraftAgent,
+    TranslationProofreadAgent, 
     TranslationDirectAgent,
     FactExtractorAgent, 
     FactValidatorAgent, 
@@ -14,6 +16,7 @@ from agents import (
 )
 from config import AppConfig
 from prompt_manager import PromptManager
+
 
 class AgentFactory:
     """
@@ -56,12 +59,30 @@ class AgentFactory:
             **prompts
         )
 
+    def create_translation_pre_draft_agent(self, context: str) -> TranslationPreDraftAgent:
+        prompts = self.pm.get_translation_draft_prompts(context)
+        return TranslationPreDraftAgent(
+            llm_endpoint=self.llm,
+            model=self.config.pre_draft.name,
+            temperature=self.config.pre_draft.temperature,
+            **prompts,
+        )
+
     def create_translation_draft_agent(self, context: str) -> TranslationDraftAgent:
         prompts = self.pm.get_translation_draft_prompts(context)
         return TranslationDraftAgent(
             llm_endpoint=self.llm,
             model=self.config.draft.name,
             temperature=self.config.draft.temperature,
+            **prompts,
+        )
+
+    def create_translation_refine_draft_agent(self, context: str) -> TranslationRefineDraftAgent:
+        prompts = self.pm.get_translation_draft_prompts(context)
+        return TranslationRefineDraftAgent(
+            llm_endpoint=self.llm,
+            model=self.config.refine_draft.name,
+            temperature=self.config.refine_draft.temperature,
             **prompts,
         )
 

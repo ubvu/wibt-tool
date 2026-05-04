@@ -87,6 +87,9 @@ class Agent:
             _messages = [_output_fix_request]
 
 
+    def set_messages(self, messages):
+        self.messages = messages
+
     def get_messages(self):
         return self.messages
 

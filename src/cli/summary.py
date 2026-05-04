@@ -28,8 +28,9 @@ parser.add_argument('-fc', '--factuality-context', help='type of prompts to use 
 parser.add_argument('-tc', '--translation-context', help='type of prompts to use for translation related agents', required=True)
 parser.add_argument('-it', '--iterations', help='number of iterations to perform', type=int, required=True)
 parser.add_argument('-i', '--input-file', help='path of the paper to summarize', required=True)
-parser.add_argument('-o', '--output-file', help='path of where the summary is stored', required=True)
+parser.add_argument('-ot', '--output-translated-summary', help='path of where the translated summary is stored')
 parser.add_argument('-st', '--search-type', help='whether to use prompt refinement (refine) or to use a static prompt (static)', required=True)
+parser.add_argument('-pf', '--provide-facts', help='whether to provide the keyfacts to generate the summary',action='store_true')
 parser.add_argument('-oes', '--output-english-summary', help='path of where the untranslated summary is stored')
 parser.add_argument('-okf', '--output-key-facts', help='path of where the overview of key-facts are stored')
 parser.add_argument('-oh', '--output-history', help='path of where the history is stored')
@@ -56,7 +57,7 @@ with open(paper_file_path, "r") as file:
 
 number_of_iterations = args.iterations
 
-output_path = args.output_file
+output_translated_summary = args.output_translated_summary
 output_english_summary_path = args.output_english_summary
 output_key_facts_path = args.output_key_facts
 output_history_path = args.output_history
@@ -67,9 +68,9 @@ factuality_context = args.factuality_context
 translation_context = args.translation_context
 
 search_method = args.search_type
+provide_facts = args.provide_facts
 
-summary_orchestrator = SummaryOrchestrator(agent_factory, prompt_manager, config, search_method)
-translation_orchestrator = TranslationOrchestrator(agent_factory, config)
+summary_orchestrator = SummaryOrchestrator(agent_factory, prompt_manager, config, search_method, provide_facts)
 
 
 summary_result = summary_orchestrator.run(
@@ -82,18 +83,24 @@ summary_result = summary_orchestrator.run(
 summary = summary_result['summary']
 
 
-translation = translation_orchestrator.run(
-    summary=summary, 
-    translation_ctx=translation_context
-)
 
 
 print(f"Summary:\n{summary}")
-print(f"Translation:\n{translation}")
 
+if output_translated_summary:
+    
+    translation_orchestrator = TranslationOrchestrator(agent_factory, config)
 
-with open(output_path, "w") as file:
-    file.write(translation)
+    translation = translation_orchestrator.run(
+        summary=summary, 
+        translation_ctx=translation_context
+    )
+
+    print(f"Translation:\n{translation}")
+
+    with open(output_translated_summary, "w") as file:
+        file.write(translation)
+
 
 if output_english_summary_path:
     with open(output_english_summary_path, "w") as file:
