@@ -19,4 +19,9 @@ class ReadEvalAgent(Agent):
         self.clear_messages()
         result = self.send_messages_structured([Template(self.read_eval_prompt).substitute(summary=summary)], ReadEval)
 
-        return result
+        return {
+            "syntactic_clarity" : int(result['syntactic_clarity']),
+            "jargon" : int(result['jargon']),
+            "information_density" : int(result['information_density']),
+            "structural_cohesion" : int(result['structural_cohesion'])
+        }
