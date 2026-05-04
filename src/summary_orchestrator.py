@@ -19,7 +19,38 @@ class SummaryOrchestrator:
         self._is_initialized: bool = False
         self._validated_facts: List[Dict[str, Any]] = []
 
-    def run(self, paper: str, summary_ctx: str, fact_ctx: str, iterations: int, score_threshold: int = 30) -> Dict[str, Any]:
+    def _get_top_prompt(self):
+
+        def sort_key(prompt):
+            # We return a tuple of the values in the specific order of importance.
+            # Python's tuple comparison is natively lexicographical.
+            return (
+                prompt['factuality_scores']['faithfulness'],
+                prompt['factuality_scores']['completeness'],
+                prompt['readability_scores']['syntactic_clarity'],
+                prompt['readability_scores']['jargon'],
+                prompt['readability_scores']['information_density'],
+                prompt['readability_scores']['structural_cohesion']
+            )
+
+        return max(self._history, key=sort_key)
+
+    def _is_sufficient_score(self, prompt):
+        if prompt['factuality_scores']['faithfulness'] < 4:
+            return False
+        if prompt['factuality_scores']['completeness'] < 4:
+            return False
+        if prompt['readability_scores']['syntactic_clarity'] < 4:
+            return False
+        if prompt['readability_scores']['jargon'] < 4:
+            return False
+        if prompt['readability_scores']['information_density'] < 4:
+            return False
+        if prompt['readability_scores']['structural_cohesion'] < 4:
+            return False
+        return True
+
+    def run(self, paper: str, summary_ctx: str, fact_ctx: str, iterations: int) -> Dict[str, Any]:
 
         summary_agent = self.factory.create_summary_agent(summary_ctx)
         read_eval_agent = self.factory.create_read_eval_agent(summary_ctx)
@@ -68,11 +99,13 @@ class SummaryOrchestrator:
             print(f"Continuing existing session. Current iteration: {self._iteration}")
 
         for _ in range(iterations):
-            top_prompt = sorted(self._history, key=itemgetter('total_score'), reverse=True)[0]
+            top_prompt = self._get_top_prompt()
             
-            if top_prompt['total_score'] >= score_threshold:
-                print(f"Threshold {score_threshold} reached. Exiting early")
+            if self._is_sufficient_score(top_prompt):
+                print(f"Threshold scores reached. Exiting early")
                 break
+            
+
 
             print(f"Iteration {self._iteration + 1} (Best Score: {top_prompt['total_score']})")
             if self.search_method == "refine":
@@ -143,7 +176,7 @@ class SummaryOrchestrator:
                 validation_results.append(validation_result_future.result())
 
             
-        self._validated_facts = self._filter_by_majority_vote(draft_facts, validation_results)
+        self._validated_facts = self._filter_by_veto_vote(draft_facts, validation_results)
 
     def _initialize_session(self, paper, summary, summary_prompt, summary_ctx, fact_ctx, summary_agent, read_eval_agent, advocate_agent, skeptic_agent, adjudicator_agent, alignment_agent):
         self._paper = paper
@@ -211,5 +244,14 @@ class SummaryOrchestrator:
             fact_num = str(i + 1)
             accepted_count = sum(1 for result in validation_results if result.get(fact_num, {}).get("response"))
             if accepted_count > threshold:
+                filtered.append(fact)
+        return filtered
+
+    def _filter_by_veto_vote(self, facts: list[dict], validation_results: list[dict]) -> list[dict]:
+        filtered = []
+        for i, fact in enumerate(facts):
+            fact_num = str(i + 1)
+            veto_count = sum(1 for result in validation_results if not result.get(fact_num, {}).get("response"))
+            if veto_count == 0:
                 filtered.append(fact)
         return filtered
