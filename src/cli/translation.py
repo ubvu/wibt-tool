@@ -17,8 +17,8 @@ from translation_orchestrator import TranslationOrchestrator
 
 
 parser = argparse.ArgumentParser(
-                    prog='summary.py',
-                    description='Creates a summary of a scientific article'
+                    prog='translation.py',
+                    description='Creates a translation of a document'
                     )
 
 
