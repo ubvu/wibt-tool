@@ -13,6 +13,7 @@ dependencies = [
   "pydantic",
   "matplotlib",
   "plotly",
+  "docling"
 ]
 
 [tool.marimo.runtime]
