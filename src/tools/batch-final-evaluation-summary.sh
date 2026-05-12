@@ -4,7 +4,7 @@
 PROGRAM="src/cli/summary.py" 
 
 # Set the number of iterations here (cannot be changed via command line)
-ITERATIONS=1
+ITERATIONS=15
 
 # The subfolders to look for inside the provided directory.
 # Format: "subfolder_name:context_value"
