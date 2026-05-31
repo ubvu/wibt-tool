@@ -1,9 +1,5 @@
-import os
-import sys
-from pathlib import Path
-import csv
 import argparse
-import json
+import sys
 
 sys.path.insert(0, "src")
 
@@ -16,56 +12,65 @@ from agent_factory import AgentFactory
 from translation_orchestrator import TranslationOrchestrator
 
 
-parser = argparse.ArgumentParser(
-                    prog='translation.py',
-                    description='Creates a translation of a document'
-                    )
+def main():
+    parser = argparse.ArgumentParser(
+        prog='translation.py',
+        description='Creates a translation of a document'
+    )
 
+    parser.add_argument('-tc', '--translation-context', help='type of prompts to use for translation related agents', required=True)
+    parser.add_argument('-i', '--input-file', help='path of the source document to translate', required=True)
+    parser.add_argument('-o', '--output-file', help='path where the translation is stored', required=True)
 
-parser.add_argument('-tc', '--translation-context', help='type of prompts to use for translation related agents', required=True)
-parser.add_argument('-i', '--input-file', help='path of the paper to summarize', required=True)
-parser.add_argument('-o', '--output-file', help='path of where the summary is stored', required=True)
+    args = parser.parse_args()
 
+    try:
+        config = AppConfig.from_env()
+    except Exception as e:
+        print(f"Configuration error: {e}")
+        sys.exit(1)
 
-args = parser.parse_args()
-
-try:
-    config = AppConfig.from_env()
     print("Configuration loaded successfully")
-except Exception as e:
-    print(f"Configuration error: {e}")
 
-llm_endpoint = OpenAIClient(token=config.api_token, endpoint=config.api_url)
+    llm_endpoint = OpenAIClient(token=config.api_token, endpoint=config.api_url)
 
-prompt_manager = PromptManager(config=config)
+    prompt_manager = PromptManager(config=config)
 
-agent_factory = AgentFactory(config=config, prompt_manager=prompt_manager, llm_endpoint=llm_endpoint)
+    agent_factory = AgentFactory(config=config, prompt_manager=prompt_manager, llm_endpoint=llm_endpoint)
 
-# load a test paper, stored in markdown
-summary_file_path = args.input_file
-with open(summary_file_path, "r") as file:
-    summary = file.read()
+    input_path = args.input_file
+    try:
+        with open(input_path, "r") as file:
+            source_content = file.read()
+    except FileNotFoundError:
+        print(f"Input file not found: {input_path}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error reading input file: {e}")
+        sys.exit(1)
 
-output_path = args.output_file
+    output_path = args.output_file
 
-translation_context = args.translation_context
+    translation_context = args.translation_context
+
+    translation_orchestrator = TranslationOrchestrator(agent_factory, config)
+
+    try:
+        translation = translation_orchestrator.run(
+            summary=source_content,
+            translation_ctx=translation_context
+        )
+    except Exception as e:
+        print(f"Translation failed: {e}")
+        sys.exit(1)
+
+    try:
+        with open(output_path, "w") as file:
+            file.write(translation)
+    except Exception as e:
+        print(f"Error writing output file: {e}")
+        sys.exit(1)
 
 
-translation_orchestrator = TranslationOrchestrator(agent_factory, config)
-
-
-
-
-
-translation = translation_orchestrator.run(
-    summary=summary, 
-    translation_ctx=translation_context
-)
-
-
-# print(f"Summary:\n{summary}")
-# print(f"Translation:\n{translation}")
-
-
-with open(output_path, "w") as file:
-    file.write(translation)
+if __name__ == "__main__":
+    main()
