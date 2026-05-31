@@ -13,6 +13,7 @@ from translation_orchestrator import TranslationOrchestrator
 
 
 def main():
+    # Parse arguments
     parser = argparse.ArgumentParser(
         prog='translation.py',
         description='Creates a translation of a document'
@@ -24,6 +25,7 @@ def main():
 
     args = parser.parse_args()
 
+    # Load configuration
     try:
         config = AppConfig.from_env()
     except Exception as e:
@@ -32,12 +34,12 @@ def main():
 
     print("Configuration loaded successfully")
 
+    # Initialize dependencies
     llm_endpoint = OpenAIClient(token=config.api_token, endpoint=config.api_url)
-
     prompt_manager = PromptManager(config=config)
-
     agent_factory = AgentFactory(config=config, prompt_manager=prompt_manager, llm_endpoint=llm_endpoint)
 
+    # Read input
     input_path = args.input_file
     try:
         with open(input_path, "r") as file:
@@ -50,11 +52,10 @@ def main():
         sys.exit(1)
 
     output_path = args.output_file
-
     translation_context = args.translation_context
 
+    # Run translation
     translation_orchestrator = TranslationOrchestrator(agent_factory, config)
-
     try:
         translation = translation_orchestrator.run(
             summary=source_content,
@@ -64,6 +65,7 @@ def main():
         print(f"Translation failed: {e}")
         sys.exit(1)
 
+    # Write output
     try:
         with open(output_path, "w") as file:
             file.write(translation)
