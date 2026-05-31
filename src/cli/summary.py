@@ -7,12 +7,12 @@ sys.path.insert(0, "src")
 
 from utils.openai_client import OpenAIClient
 
-from config import AppConfig
-from prompt_manager import PromptManager
-from agent_factory import AgentFactory
+from core.config import AppConfig
+from core.prompt_manager import PromptManager
+from core.agent_factory import AgentFactory
 
-from summary_orchestrator import SummaryOrchestrator
-from translation_orchestrator import TranslationOrchestrator
+from pipelines.summarization import SummaryOrchestrator
+from pipelines.translation import TranslationOrchestrator
 
 
 def main():

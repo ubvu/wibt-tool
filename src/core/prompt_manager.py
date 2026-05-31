@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 from typing import Dict
-from config import AppConfig
+from core.config import AppConfig
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

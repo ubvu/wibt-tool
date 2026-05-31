@@ -5,7 +5,7 @@ This module provides functionality to extract key facts from documents
 and validate them using multiple LLM agents with majority voting.
 """
 
-from utils.agent import Agent
+from agents.base import Agent
 from utils.json_helper import extract_json
 
 

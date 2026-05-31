@@ -14,8 +14,8 @@ from agents import (
     ArgumentAgent, 
     AdjudicatorAgent
 )
-from config import AppConfig
-from prompt_manager import PromptManager
+from core.config import AppConfig
+from core.prompt_manager import PromptManager
 
 
 class AgentFactory:

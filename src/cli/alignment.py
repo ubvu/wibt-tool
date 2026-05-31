@@ -10,9 +10,9 @@ sys.path.insert(0, "src")
 from dotenv import load_dotenv
 from utils.open_webui import OpenWebuiClient
 from utils.openai_client import OpenAIClient
-from utils.agent import Agent
-from factuality.extraction import extract_and_validate_facts
-from factuality.alignment import align_facts_to_summary
+from agents.base import Agent
+from pipelines.factuality_extraction import extract_and_validate_facts
+from pipelines.factuality_alignment import align_facts_to_summary
 
 load_dotenv()
 

@@ -5,7 +5,7 @@ This module provides functionality to check if extracted facts are
 contained in a summary using LLM-based evaluation.
 """
 
-from utils.agent import Agent
+from agents.base import Agent
 from utils.json_helper import extract_json
 
 
