@@ -1,0 +1,15 @@
+Input Data:
+=== ORIGINAL PROMPT ===
+```
+$prompt
+```
+
+=== READABILITY REPORT ===
+Syntactic clarity score: $clarity
+Jargon score: $jargon
+Information density score: $density
+Structural cohesion score: $cohesion
+
+=== FACTUALITY REPORT ===
+Faithfulness score: $faithfulness
+Completeness score: $completeness

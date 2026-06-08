@@ -7,6 +7,21 @@ The project utilizes an **agentic workflow** architecture, where multiple specia
 
 ---
 
+## Current Status
+> **Note:** The project is undergoing a significant restructuring into a modular package (`wibt_tool`) to support WASM/Pyodide deployment.
+
+- **Status**: Phase 2 (Refactoring & Cleanup) is currently **In Progress**.
+- **Primary Usage (Main Workflows)**:
+  - **Summarization**: Managed via `apps/cli/summary.py`.
+  - **Translation**: Managed via `apps/cli/translation.py` (may also serve as a tool).
+- **Tools (Refactored)**:
+  - **Fact Extraction**: `apps/tools/extraction.py`.
+  - **Fact Alignment**: `apps/tools/alignment.py`.
+- **GUI**:
+  - The Graphical User Interface (`apps/gui/`) is currently undergoing a full rewrite to be compatible with the new architecture and marimo/WASM.
+
+---
+
 ## Core Workflows
 
 ### 1. Summarization Workflow
@@ -29,36 +44,69 @@ A multi-step verification process to ensure that summaries and translations do n
 ## Project Structure
 
 ### Root Directory
+- `AGENTS.md`: Documentation for LLM agent instructions.
 - `LICENSE`: Project license.
 - `README.md`: Basic project information.
-- `pyproject.toml`: Python project configuration and dependencies.
-- `prompts/`: Centralized repository for LLM prompt templates.
+- `TODO.md`: Project roadmap and task tracking.
+- `pyproject.toml`: Python project configuration and dependencies (using `uv`).
+- `prompts/`: Centralized repository for LLM prompt templates, organized by context.
   - `factuality_evaluation/`: Prompts for the fact-checking workflow.
   - `summary/`: Prompts for the summarization workflow.
   - `translation/`: Prompts for the translation workflow.
 
-### Source Code (`src/`)
+### Source Code (`src/wibt_tool/`)
+The core logic is encapsulated in the `wibt_tool` package.
 - **`agent_factory.py`**: The central factory for assembling agents, injecting configuration, prompts, and LLM connections.
-- **`agents/`**: Implementation of specialized AI agents.
-  - `agent.py`: Base class defining common agent behavior.
-  - `[name]_agent.py`: Specific agent implementations (e.g., `SummaryAgent`, `FactExtractorAgent`).
-- **`cli/`**: Command-line interfaces for running workflows (alignment, extraction, summary, translation).
+- **`agents/`**: Implementation of specialized AI agents (e.g., `SummaryAgent`, `FactExtractorAgent`).
+- **`pipelines/`**: Orchestration logic for complex workflows.
+  - `summary_pipeline.py`: Iterative summarization loop.
+  - `translation_pipeline.py`: Sequential translation pipeline.
 - **`config.py`**: Configuration management using `dataclasses` and environment variables.
-- **`create_summary.py` / `create_translation.py`**: Entry-point scripts for common tasks.
 - **`factuality/`**: Core logic for factuality assessment and alignment.
-- **`gui/`**: Graphical User Interface components for interacting with the tools.
 - **`models/`**: Data models representing domain entities (e.g., `Argument`, `Judgement`, `KeyFact`).
-- **`prompt_manager.py`**: Logic for loading and managing prompt templates with support for context-specific fallbacks.
-- **`summary_orchestrator.py`**: Orchestrates the sequence of agents for the summarization process.
-- **`translation_orchestrator.py`**: Orchestrates the sequence of agents for the translation process.
-- **`tools/`**: Utility scripts and batch processing tools (many are `.sh` scripts).
-- **`utils/`**: General-purpose utility functions (JSON handling, OpenAI client, string manipulation).
+- **`prompt_manager.py`: Logic for loading and managing prompt templates with support for context-specific fallbacks and WASM compatibility.
+- **`utils/`: General-purpose utility functions (JSON handling, OpenAI client, etc.).
+
+### Applications (`apps/`)
+Client applications that utilize the `wibt_tool` library.
+- **`cli/`**: Command-line interfaces for primary workflows (e.g., `summary.py`, `translation.py`).
+- **`tools/`**: Utility tools for specific tasks (e.g., `alignment.py`, `extraction.py`).
+- **`gui/`**: Graphical User Interface components (marimo/WASM target).
 
 ---
 
 ## Technical Architecture Notes
 
 - **Agentic Design**: Instead of a single prompt, complex tasks are broken down into a sequence of specialized agents.
-- **Prompt Decoupling**: Prompts are stored in external `.txt` files, allowing for rapid iteration without changing code. The `PromptManager` handles hierarchical loading (context-specific vs. default).
-- **Configuration-Driven**: The entire behavior of the system (which models to use, temperatures, API settings) is managed through environment variables via `AppConfig`.
-- **Data Modeling**: Strong typing is used via Python `dataclasses` to represent complex states like arguments and judgments.
+- **Prompt Decoupling**: Prompts are stored in external `.txt` files, allowing for rapid iteration without changing code. The `PromptManager` handles hierarchical loading.
+- **Configuration-Driven**: The entire behavior of the system is managed through environment variables via `AppConfig`.
+- **WASM Compatibility**: The architecture is designed to be portable, using `importlib.resources` for asset management and abstracting file I/O to support virtual filesystems.
+
+---
+
+## Dependency Trace: `apps/cli/summary.py`
+`apps/cli/summary.py` is the primary entry point for the main summarization and translation workflow.
+
+### 1. Pipeline & Flow Control
+*   **`apps/cli/summary.py`**: The CLI entry point that parses arguments and starts the process.
+*   **`src/wibt_tool/pipelines/summary_pipeline.py`**: An iterative pipeline that optimizes summary quality through a loop of generation, evaluation, and refinement.
+*   **`src/wibt_tool/pipelines/translation_pipeline.py`**: (Conditional) A sequential pipeline that produces a polished translation through drafting, refinement, and proofreading.
+
+### 2. Agent System
+The pipelines rely on the `AgentFactory` to instantiate specialized agents defined in `src/wibt_tool/agents/`:
+*   **Summarization Loop**:
+    *   `SummaryAgent`, `ReadEvalAgent`, `RefinementAgent`.
+*   **Factuality Loop**:
+    *   `FactExtractorAgent`, `FactValidatorAgent`, `FactAlignmentAgent`, `ArgumentAgent` (Advocate/Skeptic), `AdjudicatorAgent`.
+*   **Translation (Conditional)**:
+    *   `TranslationPreDraftAgent`, `TranslationDraftAgent`, `TranslationRefineDraftAgent`, `TranslationProofreadAgent`, `TranslationDirectAgent`.
+
+### 3. Data & Configuration
+*   **`src/wibt_tool/models/`**: Data models passed between agents (e.g., `Argument`, `Judgement`).
+*   **`src/wibt_tool/config.py`**: Loads environment variables and provides `AppConfig`.
+*   **`src/wibt_tool/prompt_manager.py`**: Handles retrieval of prompt templates from `src/wibt_tool/prompts/`.
+
+### 4. Infrastructure & Utilities
+*   **`src/wibt_tool/agent_factory.py`**: The central assembly point for all agents.
+*   **`src/wibt_tool/utils/openai_client.py`**: Low-level interface for LLM communication.
+*   **`src/wibt_tool/utils/`**: General purpose helpers.
