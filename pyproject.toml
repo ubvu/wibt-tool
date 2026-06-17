@@ -21,8 +21,9 @@ dependencies = [
 #  "docling" # not pytonic
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.setuptools.package-data]
+"wibt_tool" = ["prompts/**/*.txt"]
+
 
 [tool.marimo.runtime]
 pythonpath = ["src"]
