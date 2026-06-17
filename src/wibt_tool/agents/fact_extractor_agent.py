@@ -14,8 +14,8 @@ class FactExtractorAgent(Agent):
         )
 
 
-    def extract_facts(self, paper):
+    async def extract_facts(self, paper):
         self.clear_messages()
-        facts = self.send_messages_structured([f"Paper:\n\n{paper}"], KeyFactList)
+        facts = await self.send_messages_structured([f"Paper:\n\n{paper}"], KeyFactList)
 
         return facts

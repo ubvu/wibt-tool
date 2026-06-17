@@ -15,7 +15,7 @@ class AdjudicatorAgent(Agent):
         )
 
 
-    def judge(self, paper, summary, advocate_arguments, skeptic_arguments):
+    async def judge(self, paper, summary, advocate_arguments, skeptic_arguments):
         self.clear_messages()
         
         split_paper = get_numbered_sentences(paper)
@@ -27,7 +27,7 @@ class AdjudicatorAgent(Agent):
 
         formatted_arguments = self._format_arguments(advocate_arguments, skeptic_arguments)
 
-        judgements = self.send_messages_structured(
+        judgements = await self.send_messages_structured(
             [
                 f"Paper:\n\n{numbered_paper}\n\nSummary with {number_of_summary_lines} lines:\n\n{numbered_summary}\n\nArguments ({number_of_summary_lines}):\n\n{formatted_arguments}"
             ], Judgement, 

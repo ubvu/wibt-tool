@@ -1,8 +1,7 @@
 import math
 from operator import itemgetter
 from typing import List, Dict, Any, Optional
-from concurrent.futures import ThreadPoolExecutor
-import concurrent.futures
+import asyncio
 
 class SummaryOrchestrator:
     def __init__(self, factory, prompt_manager, config, search_method, provide_facts):
@@ -50,7 +49,7 @@ class SummaryOrchestrator:
             return False
         return True
 
-    def run(self, paper: str, summary_ctx: str, fact_ctx: str, iterations: int) -> Dict[str, Any]:
+    async def run(self, paper: str, summary_ctx: str, fact_ctx: str, iterations: int) -> Dict[str, Any]:
 
         summary_agent = self.factory.create_summary_agent(summary_ctx)
         read_eval_agent = self.factory.create_read_eval_agent(summary_ctx)
@@ -66,18 +65,15 @@ class SummaryOrchestrator:
             print("Starting a new session")
             print(f"Provide facts:{self.provide_facts}")
             if self.provide_facts:
-                self._extract_facts(paper, extractor_agent, validator_agents)
-                summary = summary_agent.generate_summary(paper, self._validated_facts)
+                await self._extract_facts(paper, extractor_agent, validator_agents)
+                summary = await summary_agent.generate_summary(paper, self._validated_facts)
             else:
-                with ThreadPoolExecutor() as executor:
-                    summary_future = executor.submit(summary_agent.generate_summary, paper)
-                    extracted_facts_done_future = executor.submit(self._extract_facts, paper, extractor_agent, validator_agents)
-                    summary = summary_future.result()
-                    extracted_facts_done_future.result()
+                summary, _ = await asyncio.gather(
+                    summary_agent.generate_summary(paper),
+                    self._extract_facts(paper, extractor_agent, validator_agents)
+                )
 
-
-
-            eval_data = self._initialize_session(
+            eval_data = await self._initialize_session(
                 paper, summary, summary_agent.get_system_prompt(), summary_ctx, fact_ctx, summary_agent, read_eval_agent, 
                 advocate_agent, skeptic_agent, adjudicator_agent, alignment_agent
             )
@@ -90,9 +86,7 @@ class SummaryOrchestrator:
                 'adjudicator': adjudicator_agent.messages,
                 'alignment': alignment_agent.messages,
                 'extractor': extractor_agent.messages,
-                'validator-0': validator_agents[0].messages,
-                'validator-1': validator_agents[1].messages,
-                'validator-2': validator_agents[2].messages
+                **{f'validator-{i}': agent.messages for i, agent in enumerate(validator_agents)}
             }
             self._history.append(eval_data)
         else:
@@ -106,10 +100,9 @@ class SummaryOrchestrator:
                 break
             
 
-
             print(f"Iteration {self._iteration + 1} (Best Score: {top_prompt['total_score']})")
             if self.search_method == "refine":
-                new_prompt = refinement_agent.refine(
+                new_prompt = await refinement_agent.refine(
                     top_prompt['prompt'], 
                     top_prompt['readability_scores'], 
                     top_prompt['factuality_scores']
@@ -123,11 +116,11 @@ class SummaryOrchestrator:
                 raise ValueError("The search type must be either 'refine' or 'static'")
 
             if self.provide_facts:
-                summary = summary_agent.generate_summary(paper, self._validated_facts)
+                summary = await summary_agent.generate_summary(paper, self._validated_facts)
             else:
-                summary = summary_agent.generate_summary(paper)
+                summary = await summary_agent.generate_summary(paper)
 
-            eval_data = self._evaluate_prompt(
+            eval_data = await self._evaluate_prompt(
                 self._paper,
                 summary,
                 new_prompt,
@@ -164,21 +157,12 @@ class SummaryOrchestrator:
             "history_length": len(self._history)
         }
     
-    def _extract_facts(self, paper, extractor_agent, validator_agents):
-        draft_facts = extractor_agent.extract_facts(paper)
-        validation_results = []
-        with ThreadPoolExecutor() as executor:
-            validation_result_futures = [] 
-            for validator_agent in validator_agents:
-                validation_result_futures.append(executor.submit(validator_agent.validate_facts, paper, draft_facts))
-            
-            for validation_result_future in validation_result_futures:
-                validation_results.append(validation_result_future.result())
-
-            
+    async def _extract_facts(self, paper, extractor_agent, validator_agents):
+        draft_facts = await extractor_agent.extract_facts(paper)
+        validation_results = await asyncio.gather(*(validator_agent.validate_facts(paper, draft_facts) for validator_agent in validator_agents))
         self._validated_facts = self._filter_by_veto_vote(draft_facts, validation_results)
 
-    def _initialize_session(self, paper, summary, summary_prompt, summary_ctx, fact_ctx, summary_agent, read_eval_agent, advocate_agent, skeptic_agent, adjudicator_agent, alignment_agent):
+    async def _initialize_session(self, paper, summary, summary_prompt, summary_ctx, fact_ctx, summary_agent, read_eval_agent, advocate_agent, skeptic_agent, adjudicator_agent, alignment_agent):
         self._paper = paper
         self._contexts = {"summary": summary_ctx, "factuality": fact_ctx}
         self._iteration = 0
@@ -186,24 +170,25 @@ class SummaryOrchestrator:
         
 
         print("Phase 2: Seeding optimization with initial prompt...")
-        eval_data = self._evaluate_prompt(
+        eval_data = await self._evaluate_prompt(
             paper, summary, summary_prompt, read_eval_agent, advocate_agent, skeptic_agent, adjudicator_agent, alignment_agent
         )
 
         self._is_initialized = True
         return eval_data
 
-    def _evaluate_prompt(self, paper, summary, summary_prompt, read_eval_agent, advocate_agent, skeptic_agent, adjudicator_agent, alignment_agent) -> Dict[str, Any]:
+    async def _evaluate_prompt(self, paper, summary, summary_prompt, read_eval_agent, advocate_agent, skeptic_agent, adjudicator_agent, alignment_agent) -> Dict[str, Any]:
         """Purely calculates the scores and returns data. Does not handle messages."""
 
-        with ThreadPoolExecutor() as executor:
-            readability_scores_future = executor.submit(read_eval_agent.evaluate_summary, summary)
-            faithfulness_future = executor.submit(self._calculate_faithfulness, paper, summary, advocate_agent, skeptic_agent, adjudicator_agent)
-            completeness_future = executor.submit(self._calculate_completeness, summary, alignment_agent)
+        readability_scores_task = read_eval_agent.evaluate_summary(summary)
+        faithfulness_task = self._calculate_faithfulness(paper, summary, advocate_agent, skeptic_agent, adjudicator_agent)
+        completeness_task = self._calculate_completeness(summary, alignment_agent)
 
-            faithfulness = faithfulness_future.result()
-            readability_scores = readability_scores_future.result()
-            completeness = completeness_future.result()
+        readability_scores, faithfulness, completeness = await asyncio.gather(
+            readability_scores_task,
+            faithfulness_task,
+            completeness_task
+        )
 
         readability_total = sum(int(score) for score in readability_scores.values())
         factuality_scores = {"faithfulness": faithfulness, "completeness": completeness}
@@ -217,21 +202,19 @@ class SummaryOrchestrator:
             "total_score": readability_total + factuality_total
         }
 
-    def _calculate_faithfulness(self, paper, summary, advocate, skeptic, adjudicator) -> int:
-        with ThreadPoolExecutor() as executor:
-            adv_args_future = executor.submit(advocate.argue, paper, summary)
-            ske_args_future = executor.submit(skeptic.argue, paper, summary)
+    async def _calculate_faithfulness(self, paper, summary, advocate, skeptic, adjudicator) -> int:
+        adv_args, ske_args = await asyncio.gather(
+            advocate.argue(paper, summary),
+            skeptic.argue(paper, summary)
+        )
 
-            adv_args = adv_args_future.result()
-            ske_args = ske_args_future.result()
-
-        judgements = adjudicator.judge(paper, summary, adv_args, ske_args)
+        judgements = await adjudicator.judge(paper, summary, adv_args, ske_args)
         total = len(judgements.values())
         contained = sum(1 for j in judgements.values() if j.get('faithful'))
         return math.floor((contained / total) * 5) if total > 0 else 0
 
-    def _calculate_completeness(self, summary, aligner) -> int:
-        alignment_results = aligner.check_alignment(self._validated_facts, summary)
+    async def _calculate_completeness(self, summary, aligner) -> int:
+        alignment_results = await aligner.check_alignment(self._validated_facts, summary)
         total = len(alignment_results.values())
         contained = sum(1 for r in alignment_results.values() if r.get('contained'))
         return math.floor((contained / total) * 5) if total > 0 else 0

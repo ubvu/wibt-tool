@@ -15,7 +15,7 @@ class ArgumentAgent(Agent):
         )
 
 
-    def argue(self, paper, summary):
+    async def argue(self, paper, summary):
         self.clear_messages()
         split_paper = get_numbered_sentences(paper)
         numbered_paper = '\n'.join(split_paper)
@@ -23,6 +23,6 @@ class ArgumentAgent(Agent):
         numbered_summary = '\n'.join(split_summary)
         print(numbered_summary)
         number_of_summary_lines = len(split_summary)
-        arguments = self.send_messages_structured([f"Paper:\n\n{numbered_paper}\n\nSummary:\n\n{numbered_summary}\n\nPlease make sure to include an argument for all {number_of_summary_lines}lines."], Argument, number=number_of_summary_lines)
+        arguments = await self.send_messages_structured([f"Paper:\n\n{numbered_paper}\n\nSummary:\n\n{numbered_summary}\n\nPlease make sure to include an argument for all {number_of_summary_lines}lines."], Argument, number=number_of_summary_lines)
 
         return arguments

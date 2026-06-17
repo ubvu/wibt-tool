@@ -1,9 +1,11 @@
+import asyncio
+
 class TranslationOrchestrator:
     def __init__(self, factory, config):
         self.factory = factory
         self.config = config
 
-    def run(self, summary: str, translation_ctx: str) -> str:
+    async def run(self, summary: str, translation_ctx: str) -> str:
         """
         Takes a summary and produces a polished translation.
         """
@@ -18,22 +20,22 @@ class TranslationOrchestrator:
 
         # 2. Drafting & Internal Refinement
         print("Step 1: Drafting and refining translation...")
-        example_translation = translation_direct_agent.translate(summary)
+        example_translation = await translation_direct_agent.translate(summary)
         print("Example translation created...")
         
         # Pre-draft
-        pre_draft = pre_draft_agent.pre_draft(summary)
+        pre_draft = await pre_draft_agent.pre_draft(summary)
         
         # Draft
         draft_agent.set_messages(pre_draft_agent.get_messages())
-        draft = draft_agent.draft(summary, example_translation)
+        draft = await draft_agent.draft(summary, example_translation)
         
         # Refine
         refine_agent.set_messages(draft_agent.get_messages())
-        refined_draft = refine_agent.refine()
+        refined_draft = await refine_agent.refine()
 
         # 3. Proofreading
         print("Step 2: Proofreading translation...")
-        translation = proof_agent.proofread_draft(summary, draft, refined_draft)
+        translation = await proof_agent.proofread_draft(summary, draft, refined_draft)
 
         return translation

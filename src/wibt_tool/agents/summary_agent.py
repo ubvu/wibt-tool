@@ -13,12 +13,12 @@ class SummaryAgent(Agent):
         )
         self.summarize_prompt = summarize_prompt
 
-    def generate_summary(self, paper, keyfacts=None):
+    async def generate_summary(self, paper, keyfacts=None):
         self.clear_messages()
         if keyfacts:
             prompt = Template(self.summarize_prompt).substitute(paper=paper)
             prompt += "\nHere is a list of the keyfacts in this paper. Make sure all of these are included in the summary.\n\n"
             prompt += str(keyfacts)
-            return self.send_message(prompt)
+            return await self.send_message(prompt)
         else:
-            return self.send_message(Template(self.summarize_prompt).substitute(paper=paper))
+            return await self.send_message(Template(self.summarize_prompt).substitute(paper=paper))

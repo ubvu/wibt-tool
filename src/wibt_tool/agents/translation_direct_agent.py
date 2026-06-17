@@ -14,9 +14,9 @@ class TranslationDirectAgent(Agent):
         self.translate_direct_prompt = translate_direct_prompt
 
 
-    def translate(self, summary):
+    async def translate(self, summary):
         self.clear_messages()
-        translation = self.send_message(Template(self.translate_direct_prompt).substitute(text=summary))
+        translation = await self.send_message(Template(self.translate_direct_prompt).substitute(text=summary))
 
 
         return translation

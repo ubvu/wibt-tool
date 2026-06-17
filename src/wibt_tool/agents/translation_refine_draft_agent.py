@@ -12,5 +12,5 @@ class TranslationRefineDraftAgent(Agent):
         )
         self.refine_draft_prompt = refine_draft_prompt
 
-    def refine(self):
-        return self.send_message(self.refine_draft_prompt)
+    async def refine(self):
+        return await self.send_message(self.refine_draft_prompt)

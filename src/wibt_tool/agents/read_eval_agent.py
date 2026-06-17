@@ -15,9 +15,9 @@ class ReadEvalAgent(Agent):
         self.read_eval_prompt = read_eval_prompt
 
 
-    def evaluate_summary(self, summary):
+    async def evaluate_summary(self, summary):
         self.clear_messages()
-        result = self.send_messages_structured([Template(self.read_eval_prompt).substitute(summary=summary)], ReadEval)
+        result = await self.send_messages_structured([Template(self.read_eval_prompt).substitute(summary=summary)], ReadEval)
 
         return {
             "syntactic_clarity" : int(result['syntactic_clarity']),

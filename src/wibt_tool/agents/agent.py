@@ -34,7 +34,7 @@ class Agent:
         ]
 
 
-    def send_messages(self, user_prompts):
+    async def send_messages(self, user_prompts):
         
         for user_prompt in user_prompts:
             self.messages += [
@@ -44,7 +44,7 @@ class Agent:
                 }
             ]
 
-        response = self.llm_endpoint.send_messages(self.model, self.messages, self.temperature)
+        response = await self.llm_endpoint.send_messages(self.model, self.messages, self.temperature)
 
         self.messages += [
             {
@@ -64,13 +64,13 @@ class Agent:
         return response
 
 
-    def send_message(self, user_prompt=""):
-        return self.send_messages([user_prompt])
+    async def send_message(self, user_prompt=""):
+        return await self.send_messages([user_prompt])
 
-    def send_messages_structured(self, messages, output_model, number=0):
+    async def send_messages_structured(self, messages, output_model, number=0):
         _messages = messages
         while True:
-            result = extract_json(self.send_messages(_messages))
+            result = extract_json(await self.send_messages(_messages))
             if result != None:
                 try:
                     if number == 0:

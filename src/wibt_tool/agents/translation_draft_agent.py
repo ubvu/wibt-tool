@@ -13,5 +13,5 @@ class TranslationDraftAgent(Agent):
         )
         self.draft_prompt = draft_prompt
 
-    def draft(self, summary, example_translation):
-        return self.send_message(Template(self.draft_prompt).substitute(text=summary, example_translation=example_translation))
+    async def draft(self, summary, example_translation):
+        return await self.send_message(Template(self.draft_prompt).substitute(text=summary, example_translation=example_translation))

@@ -1,24 +1,24 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 import json
 
 class OpenAIClient:
     def __init__(self, token, endpoint):
-        self.token = token
-        self.client = OpenAI(
+        self.client = AsyncOpenAI(
             base_url=endpoint,
-            api_key=token,  
+            api_key=token,
+            timeout=600.0
         )
 
-    def send_messages(self, model, messages, temperature):
-        chat_completion = self.client.chat.completions.create(
+    async def send_messages(self, model, messages, temperature):
+        chat_completion = await self.client.chat.completions.create(
             messages=messages,
             model=model,
             temperature=temperature
         )
         return chat_completion.choices[0].message.content
 
-    def get_model_list(self):
-        models = self.client.models.list()
+    async def get_model_list(self):
+        models = await self.client.models.list()
         ids = []
         for model in models:
             ids += [model.id]

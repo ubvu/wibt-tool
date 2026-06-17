@@ -14,7 +14,7 @@ class RefinementAgent(Agent):
         self.refine_prompt = refine_prompt
 
 
-    def refine(self, prompt, readability_scores, factuality_scores):
+    async def refine(self, prompt, readability_scores, factuality_scores):
         self.clear_messages()
 
         prompt_information = {
@@ -27,5 +27,5 @@ class RefinementAgent(Agent):
             'completeness' : factuality_scores['completeness']
         }
 
-        result = self.send_messages_structured([Template(self.refine_prompt).substitute(prompt_information)], Prompt)
+        result = await self.send_messages_structured([Template(self.refine_prompt).substitute(prompt_information)], Prompt)
         return result['prompt']

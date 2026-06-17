@@ -13,6 +13,6 @@ class TranslationPreDraftAgent(Agent):
         )
         self.pre_draft_prompt = pre_draft_prompt
 
-    def pre_draft(self, summary):
+    async def pre_draft(self, summary):
         self.clear_messages()
-        return self.send_message(Template(self.pre_draft_prompt).substitute(text=summary))
+        return await self.send_message(Template(self.pre_draft_prompt).substitute(text=summary))

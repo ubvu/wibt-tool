@@ -14,7 +14,7 @@ class TranslationProofreadAgent(Agent):
         self.proofread_prompt = proofread_prompt
 
 
-    def proofread_draft(self, summary, draft, refined_draft):
+    async def proofread_draft(self, summary, draft, refined_draft):
         self.clear_messages()
 
         documents = {
@@ -22,7 +22,7 @@ class TranslationProofreadAgent(Agent):
             'draft' : draft,
             'refined_draft' : refined_draft
         }
-        translation = self.send_message(Template(self.proofread_prompt).substitute(documents))
+        translation = await self.send_message(Template(self.proofread_prompt).substitute(documents))
 
 
         return translation
