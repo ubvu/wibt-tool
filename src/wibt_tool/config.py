@@ -81,13 +81,20 @@ class AppConfig:
 
         # 3. Validator List Settings
         validators = []
-        val_models = config_dict.get("fact_validators_models", [])
-        val_temps = config_dict.get("fact_validators_temps", [])
-        if len(val_models) == len(val_temps):
+        val_models = config_dict.get("fact_validators_models") or config_dict.get("FACT_VALIDATION_MODEL", [])
+        val_temps = config_dict.get("fact_validators_temps") or config_dict.get("FACT_VALIDATION_MODEL_TEMP", [])
+
+        # Handle comma-separated strings (common in manual dict construction)
+        if isinstance(val_models, str):
+            val_models = [m.strip() for m in val_models.split(",")]
+        if isinstance(val_temps, str):
+            val_temps = [t.strip() for t in val_temps.split(",")]
+
+        if isinstance(val_models, list) and isinstance(val_temps, list) and len(val_models) == len(val_temps):
             for m, t in zip(val_models, val_temps):
                 validators.append(ModelSettings(name=m, temperature=float(t)))
         elif len(val_models) > 0:
-            raise ValueError("Mismatch between number of validation models and temperatures.")
+            raise ValueError(f"Mismatch between number of validation models ({len(val_models)}) and temperatures ({len(val_temps)}).")
 
         # 4. Assemble
         return cls(
