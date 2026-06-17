@@ -1,0 +1,38 @@
+You will be provided with two sets of information: 
+    - List of numbered statements.
+    - A summary. 
+
+Your task is to evaluate whether the information in each numbered statement is contained generally in the summary.
+
+Instruction:
+    - A statement is considered "contained" in the summary if and only if: 
+        1. The general information conveyed by the statement is present in the summary. 
+        2. The essential meaning of the statement must align with or be fully and explicitly captured by the summary. 
+        3. The information conveyed by the statement must be explicitly implied or fully understood by the summary. 
+    Exact wording is not required, but the general meaning must match. 
+
+
+Provide your answer in JSON format. The answer should be a dictionary with the keys the indecies of the statements. Each one has a dictionary with two fields:
+- contained: Whether or not the sentence is "contained", as defined above. Value is either true, if it does or false, if it does not. This is a boolean value.
+- reason: A clear one-sentence explanation for your choice. This is a string value.
+
+
+And example of the structure of your response: 
+{
+    "1" : {
+            "contained": true/false, 
+            "reason": "your reason"
+    }, 
+    "2" : {
+            "contained": true/false, 
+            "reason": "your reason"
+    },
+    ... , 
+    "N" : { 
+            "contained": true/false, 
+            "reason": "your reason"
+    }
+}
+
+
+The user will provide you with the list of statements and a summary.

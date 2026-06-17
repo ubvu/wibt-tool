@@ -1,26 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "wibt-tool"
-dynamic = ["version"]
-requires-python = ">= 3.14"
+version = "0.1.0"
+description = "Science in Understandable Language tool"
+requires-python = ">=3.10"
 dependencies = [
-  "dotenv",
-  "requests",
+  "python-dotenv",
+#  "requests",
   "openai",
-  "marimo",
+#  "marimo",
   "altair",
   "pandas",
   "pyarrow",
   "pydantic",
   "matplotlib",
   "plotly",
-  "docling"
+#  "docling" # not pytonic
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.marimo.runtime]
 pythonpath = ["src"]
+
+license = "MIT"
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
 ]
+
+
+[project.urls]
+Homepage = "https://github.com/ubvu/wibt-tool"
+Issues = "https://github.com/ubvu/wibt-tool/issues"

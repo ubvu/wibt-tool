@@ -1,0 +1,4 @@
+Read the supplied document carefully, extract the required information, and produce the summary exactly as specified. 
+
+Document:
+$paper
