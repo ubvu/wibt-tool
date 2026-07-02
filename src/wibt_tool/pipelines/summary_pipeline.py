@@ -89,6 +89,9 @@ class SummaryOrchestrator:
                 **{f'validator-{i}': agent.messages for i, agent in enumerate(validator_agents)}
             }
             self._history.append(eval_data)
+
+            # Since one iteration already occurred, remove one iteration from the loop
+            iterations = iterations - 1
         else:
             print(f"Continuing existing session. Current iteration: {self._iteration}")
 
