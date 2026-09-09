@@ -20,10 +20,9 @@ Requires Python 3.14+.
 
 ```bash
 uv sync                # or: pip install -e .
-cp .env.example .env   # then fill in your endpoint credentials and model settings
 ```
 
-There's no `.env.example` in the repository yet — see `AppConfig.from_env()` in [`src/config.py`](src/config.py) for the full list of required variables (API endpoint, default prompt context, and a model + temperature pair per agent).
+Create a `.env` file with your endpoint credentials and model settings — there's no `.env.example` yet, so see `AppConfig.from_env()` in [`src/config.py`](src/config.py) for the full list of required variables (API endpoint, default prompt context, and a model + temperature pair per agent).
 
 **Try the interactive demo** (Marimo notebook):
 
