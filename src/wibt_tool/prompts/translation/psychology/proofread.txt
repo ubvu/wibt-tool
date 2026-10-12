@@ -1,0 +1,8 @@
+Brontekst
+$text
+
+Conceptvertaling
+$draft
+
+Verfijnde vertaling
+$refined_draft
