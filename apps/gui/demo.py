@@ -44,6 +44,7 @@ def _():
         io,
         mo,
         os,
+        re,
     )
 
 
@@ -77,13 +78,13 @@ def _():
     ## Instellingen
     Je kunt enkele aanpassingen maken in hoe de samenvatting wordt gemaakt. Als je niet weet of je een aanpassing wilt maken, dan zijn de huidige instellingen een goed startpunt.
     ### Aantal kandidaatsamenvattingen
-    Deze tool maakt een aantal verschillende samenvattingen en kiest daarna de beste. Je krijgt dus slechts één samenvatting te zien. Meer samenvattingen genereren om uit te kiezen verhoogt de kans op een betere samenvatting, maar vergt meer tijd. Gebruik de slider hieronder om het aantal samenvattingen te kiezen.
+    Deze tool genereert verschillende samenvattingen en selecteert vervolgens de beste; daarom ziet u slechts één definitieve samenvatting. Kies uit twee modi: Eco of Kwaliteit. De eco-modus genereert minder samenvattingen, maar verbruikt minder energie en tijd. De kwaliteit-modus genereert meer kandidaten, wat de kans op een beter resultaat vergroot, maar kost meer tijd en energie.
     """, 
             "english" : """
     ##Settings
     You can make a few adjustments to how the summary is generated. If you're not sure whether to change anything, the current settings are a good starting point.
     ###Number of candidate summaries
-    This tool generates several different summaries and then selects the best one; therefore, you will only see a single final summary. Generating more candidates increases the chance of a better result, but takes more time. Use the slider below to choose the number of summaries.
+    This tool generates several different summaries and then selects the best one; therefore, you will only see a single final summary. Select from two modes: eco or quality. The eco mode generates fewer summaries, but takes less energy and time to generate your summary. The quality mode generates more candidates increasing the chance of a better result, but takes more time and energy.
     """
         },
         "usage" : { 
@@ -131,6 +132,10 @@ def _():
         },
         "api endpoint" : { "dutch" : "API endpoint", "english" : "API endpoint"},
         "model settings" : { "dutch" : "Model instellingen", "english" : "Model settings"},
+        "mode" : { "dutch" : "Modus", "english" : "Mode"},
+        "eco" : { "dutch" : "eco", "english" : "eco"},
+        "quality" : { "dutch" : "kwaliteit", "english" : "quality"},
+    
         # "" : { "dutch" : "", "english" : ""},
     }
     return (text_db,)
@@ -219,7 +224,7 @@ def _():
 
 
 @app.cell
-def _(labeled_ui, mo, os):
+def _(labeled_ui, mo, os, re):
     def create_model_dropdowns(model_names, model_list):
         _form_list = []
         _form_dict = {}
@@ -238,7 +243,7 @@ def _(labeled_ui, mo, os):
                         index = int(match.group(1))
                         if index < len(parts):
                             val = parts[index]
-                        
+                
                         base_temp_key = 'DEFAULT_' + base_name + '_MODEL_TEMP'
                         base_temp_list_str = os.getenv(base_temp_key)
                         if base_temp_list_str and temp_val is None:
@@ -317,9 +322,16 @@ def _(get_string, mo):
 
 @app.cell
 def _(get_string, mo):
-    slider = mo.ui.slider(1, 10, value=3, show_value=True, label=get_string("candidates"))
-    slider
-    return (slider,)
+    mode = mo.ui.dropdown(
+        options={
+            get_string("eco") : 3,
+            get_string("quality") : 10
+        },
+        value= get_string("eco"),
+        label=get_string("mode")
+    )
+    mode
+    return (mode,)
 
 
 @app.cell
@@ -476,15 +488,15 @@ async def _(
     context,
     get_string,
     mo,
+    mode,
     paper,
-    slider,
     start_button,
     summary_orchestrator,
     translation_orchestrator,
 ):
     _output = None
     if paper and start_button.value:
-        _iterations = slider.value
+        _iterations = mode.value
         _context = context.value
         with mo.status.progress_bar(total=_iterations, title=get_string("generating summaries"), completion_title=get_string("finished generating summaries")) as bar:
 
