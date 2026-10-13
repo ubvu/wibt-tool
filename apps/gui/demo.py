@@ -1,14 +1,16 @@
 import marimo
 
-__generated_with = "0.23.9"
+__generated_with = "0.25.1"
 app = marimo.App(width="medium")
 
 
 @app.cell
-async def _():
+def _():
     import marimo as mo
     import io
     import sys
+    import os
+    import re
     from openai import OpenAI
     import base64
     import markitdown_no_magika
@@ -39,36 +41,21 @@ async def _():
         PromptManager,
         SummaryOrchestrator,
         TranslationOrchestrator,
-        base64,
         io,
         mo,
+        os,
     )
 
 
 @app.cell
-def _():
-    # _query_params = mo.query_params()
-    # _default_api_url = _query_params.get('api_url', '')
-    # _default_api_token = _query_params.get('api_token', '')
+def _(os):
+    # Get API settings from environment variables
+    _default_api_url = os.getenv('OPEN_AI_URL', '')
+    _default_api_token = os.getenv('OPEN_AI_TOKEN', '')
 
-
-    # api_url_form = mo.ui.text(placeholder="https://example.com/v1", label="Api endpoint:", value=_default_api_url)
-    # api_token_form = mo.ui.text(placeholder="sk-...", label="Api token:", value=_default_api_token, kind="password")
-
-    # mo.vstack([api_url_form, api_token_form])
-    return
-
-
-@app.cell
-def _():
-    # api_url = None
-    # api_token = None
-    # if api_url_form.value != '':
-    #     api_url = api_url_form.value
-    #     api_token = api_token_form.value
-
-    # print(api_url)
-    return
+    default_api_url = _default_api_url if _default_api_url != '' else None
+    default_api_token = _default_api_token if _default_api_token != '' else None
+    return default_api_token, default_api_url
 
 
 @app.cell
@@ -170,49 +157,37 @@ def _(get_string, language_option, mo):
 
 
 @app.cell
-def _(base64, mo):
+def _(default_api_token, default_api_url, mo):
     def labeled_ui(label_text, input_element, width="350px"):
         return mo.hstack([
             mo.Html(f"<div style='width: {width}; font-weight: bold;'>{label_text}</div>"), 
             input_element
         ], justify="start")
 
-    # --- 2. Setup Logic (Query Params) ---
-    _query_params = mo.query_params()
-    _default_api_url = _query_params.get('api_url', '')
-
-    try:
-        _default_api_token = base64.b64decode(_query_params.get('api_token', '')).decode()
-    except:
-        _default_api_token = ''
-    # _default_api_token = 
+    # --- 2. Setup Logic (Environment Variables) ---
+    # _default_api_url and _default_api_token are already set from os.getenv above
 
     # --- 3. Define the Form Elements ---
     # Text inputs
     api_url_form = mo.ui.text(
         placeholder="https://example.com/v1", 
-        value=_default_api_url,
+        value=default_api_url,
         kind="url",
         full_width=True,
     )
     api_token_form = mo.ui.text(
         placeholder="sk-...", 
-        value=_default_api_token, 
+        value=default_api_token, 
         kind="password"
     )
+
+    print(default_api_url)
     return api_token_form, api_url_form, labeled_ui
 
 
 @app.cell
 def _():
     return
-
-
-@app.cell
-def _(api_token_form, api_url_form):
-    api_url = api_url_form.value if api_url_form.value != '' else None
-    api_token = api_token_form.value if api_token_form.value != '' else None
-    return api_token, api_url
 
 
 @app.cell
@@ -244,21 +219,48 @@ def _():
 
 
 @app.cell
-def _(labeled_ui, mo):
+def _(labeled_ui, mo, os):
     def create_model_dropdowns(model_names, model_list):
         _form_list = []
         _form_dict = {}
-        _query_params = mo.query_params()
         for model_name in model_names:
+            val = os.getenv('DEFAULT_' + model_name + '_MODEL', None)
+            temp_val = os.getenv('DEFAULT_' + model_name + '_MODEL_TEMP', None)
+
+            if val is None:
+                match = re.search(r'(\d+)$', model_name)
+                if match:
+                    base_name = model_name[:match.start()]
+                    base_env_key = 'DEFAULT_' + base_name + '_MODEL'
+                    base_list_str = os.getenv(base_env_key)
+                    if base_list_str:
+                        parts = [p.strip() for p in base_list_str.split(',')]
+                        index = int(match.group(1))
+                        if index < len(parts):
+                            val = parts[index]
+                        
+                        base_temp_key = 'DEFAULT_' + base_name + '_MODEL_TEMP'
+                        base_temp_list_str = os.getenv(base_temp_key)
+                        if base_temp_list_str and temp_val is None:
+                            temp_parts = [t.strip() for t in base_temp_list_str.split(',')]
+                            if index < len(temp_parts):
+                                try:
+                                    temp_val = float(temp_parts[index])
+                                except ValueError:
+                                    temp_val = 0.0
+
             _form_dict[model_name + "_MODEL"] = mo.ui.dropdown(
                 options=model_list, 
-                value=_query_params.get(model_name + "_MODEL", None),
+                value=val,
                 full_width=True
             )
             _form = labeled_ui(model_name + "_MODEL", _form_dict[model_name + "_MODEL"] )
             _form_list += [_form]
 
-            _form_dict[model_name + "_MODEL_TEMP"] =  mo.ui.slider(start=0,stop=1,step=0.01, show_value=True, value=float(_query_params.get(model_name + "_MODEL_TEMP", 0)))
+            if temp_val is None:
+                temp_val = 0.0
+
+            _form_dict[model_name + "_MODEL_TEMP"] =  mo.ui.slider(start=0,stop=1,step=0.01, show_value=True, value=float(temp_val))
             _form = labeled_ui(model_name + "_MODEL_TEMP", _form_dict[model_name + "_MODEL_TEMP"])
             _form_list += [_form]
 
@@ -276,49 +278,14 @@ def _(
     PromptManager,
     SummaryOrchestrator,
     TranslationOrchestrator,
-    api_token,
-    api_url,
     context,
+    default_api_token,
+    default_api_url,
     model_dict,
 ):
-    # config = AppConfig.from_dict({
-    #     "api_url" : api_url, 
-    #     "api_token" : api_token,
-    #     "SUMMARY_MODEL": "gemma3-12b-120k",
-    #     "SUMMARY_MODEL_TEMP": 0.5,
-    #     "READ_EVAL_MODEL": "gpt-oss-120b-120k",
-    #     "READ_EVAL_MODEL_TEMP": 0,
-    #     "REFINEMENT_MODEL": "gpt-oss-120b-120k",
-    #     "REFINEMENT_MODEL_TEMP": 1,
-    #     "PREDRAFT_MODEL": "gpt-oss-120b-120k",
-    #     "PREDRAFT_MODEL_TEMP": 0,
-    #     "DRAFT_MODEL": "gemma3-12b-120k",
-    #     "DRAFT_MODEL_TEMP": 0,
-    #     "REFINE_DRAFT_MODEL": "gemma3-12b-120k",
-    #     "REFINE_DRAFT_MODEL_TEMP": 0,
-    #     "PROOFREAD_MODEL": "gemma3-12b-120k",
-    #     "PROOFREAD_MODEL_TEMP": 0,
-    #     "DIRECT_TRANSLATION_MODEL": "translategemma:12b",
-    #     "DIRECT_TRANSLATION_TEMP": 0,
-    #     "FACT_EXTRACTION_MODEL": "gpt-oss-120b-120k",
-    #     "FACT_EXTRACTION_MODEL_TEMP": 0,
-    #     "FACT_VALIDATION_MODEL": "gpt-oss-120b-120k,gemma3-12b-120k,gemma3-12b-120k",
-    #     "FACT_VALIDATION_MODEL_TEMP": "0.5,0.5,0.5",
-    #     "ALIGNMENT_MODEL": "gpt-oss-120b-120k",
-    #     "ALIGNMENT_MODEL_TEMP": 0,
-    #     "ADVOCATE_MODEL": "gpt-oss-120b-120k",
-    #     "ADVOCATE_MODEL_TEMP": 0,
-    #     "SKEPTIC_MODEL": "gpt-oss-120b-120k",
-    #     "SKEPTIC_MODEL_TEMP": 0,
-    #     "ADJUDICATOR_MODEL": "gpt-oss-120b-120k",
-    #     "ADJUDICATOR_MODEL_TEMP": 0,
-    #     "CONTEXT": context.value
-    # }
-    # )
-
     config = AppConfig.from_dict({
-        "api_url" : api_url, 
-        "api_token" : api_token,
+        "api_url" : default_api_url, 
+        "api_token" : default_api_token,
         "CONTEXT": context.value,
         "REFINEMENT_MODEL": "Not used anymore",
         "REFINEMENT_MODEL_TEMP": 1,
@@ -362,14 +329,18 @@ def _(get_string, mo):
 
 
 @app.cell
-def _(get_string, mo):
+def _(get_string, mo, os):
+    # Get default context from environment variable
+    _default_context = os.getenv('DEFAULT_CONTEXT', 'general')
+
     context = mo.ui.dropdown(
         options={
             get_string("general") : "general",
             get_string("psychology") : "psychology",
             get_string("policy making") : "tweede-kamer"
         },
-        value=get_string("general") 
+        value= get_string("general") # TODO change
+        # _default_context if _default_context in ["general", "psychology", "tweede-kamer"] else "general"
     )
     context
     return (context,)
@@ -407,11 +378,11 @@ def _():
 @app.cell
 def _(
     OpenAI,
-    api_token,
     api_token_form,
-    api_url,
     api_url_form,
     create_model_dropdowns,
+    default_api_token,
+    default_api_url,
     get_string,
     labeled_ui,
     mo,
@@ -425,10 +396,10 @@ def _(
 
     _model_names = ["SUMMARY", "READ_EVAL", "PREDRAFT", "DRAFT", "REFINE_DRAFT", "PROOFREAD", "DIRECT_TRANSLATION", "FACT_EXTRACTION", "FACT_VALIDATION_0", "FACT_VALIDATION_1", "FACT_VALIDATION_2", "ALIGNMENT", "ADVOCATE", "SKEPTIC", "ADJUDICATOR"]
 
-    if api_url:
+    if default_api_url:
         _client = OpenAI(
-        base_url=api_url, 
-        api_key=api_token
+        base_url=default_api_url, 
+        api_key=default_api_token
     )
         model_list = []
         try:
