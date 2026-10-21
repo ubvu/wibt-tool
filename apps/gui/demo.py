@@ -77,13 +77,13 @@ def _():
             "dutch" : """
     ## Instellingen
     Je kunt enkele aanpassingen maken in hoe de samenvatting wordt gemaakt. Als je niet weet of je een aanpassing wilt maken, dan zijn de huidige instellingen een goed startpunt.
-    ### Aantal kandidaatsamenvattingen
+    ### Modus
     Deze tool genereert verschillende samenvattingen en selecteert vervolgens de beste; daarom ziet u slechts één definitieve samenvatting. Kies uit twee modi: Eco of Kwaliteit. De eco-modus genereert minder samenvattingen, maar verbruikt minder energie en tijd. De kwaliteit-modus genereert meer kandidaten, wat de kans op een beter resultaat vergroot, maar kost meer tijd en energie.
     """, 
             "english" : """
     ##Settings
     You can make a few adjustments to how the summary is generated. If you're not sure whether to change anything, the current settings are a good starting point.
-    ###Number of candidate summaries
+    ###Mode
     This tool generates several different summaries and then selects the best one; therefore, you will only see a single final summary. Select from two modes: eco or quality. The eco mode generates fewer summaries, but takes less energy and time to generate your summary. The quality mode generates more candidates increasing the chance of a better result, but takes more time and energy.
     """
         },
@@ -135,7 +135,7 @@ def _():
         "mode" : { "dutch" : "Modus", "english" : "Mode"},
         "eco" : { "dutch" : "eco", "english" : "eco"},
         "quality" : { "dutch" : "kwaliteit", "english" : "quality"},
-    
+        "ai-notice" : { "dutch" : "Let op: deze text is geproduceerd met behulp van een AI‑taalmodel. Het is automatisch gegenereerd en kan fouten bevatten.", "english" : "Please note that the following content was produced using an AI language model. The output is automatically generated and may contain inaccuracies."},
         # "" : { "dutch" : "", "english" : ""},
     }
     return (text_db,)
@@ -243,7 +243,7 @@ def _(labeled_ui, mo, os, re):
                         index = int(match.group(1))
                         if index < len(parts):
                             val = parts[index]
-                
+    
                         base_temp_key = 'DEFAULT_' + base_name + '_MODEL_TEMP'
                         base_temp_list_str = os.getenv(base_temp_key)
                         if base_temp_list_str and temp_val is None:
@@ -328,7 +328,7 @@ def _(get_string, mo):
             get_string("quality") : 10
         },
         value= get_string("eco"),
-        label=get_string("mode")
+        # label=get_string("mode")
     )
     mode
     return (mode,)
@@ -484,6 +484,11 @@ def _(MarkItDown, PdfReader, file_button, get_string, io, mo):
 
 
 @app.cell
+def _():
+    return
+
+
+@app.cell
 async def _(
     context,
     get_string,
@@ -492,6 +497,7 @@ async def _(
     paper,
     start_button,
     summary_orchestrator,
+    text_db,
     translation_orchestrator,
 ):
     _output = None
@@ -516,7 +522,7 @@ async def _(
                     summary=summary, 
                     translation_ctx=_context
                 )
-        _output = mo.vstack([mo.md(get_string("summaries")), mo.accordion({ get_string("english"): mo.md(summary), get_string("dutch"): mo.md(translation)})])
+        _output = mo.vstack([mo.md(get_string("summaries")), mo.accordion({ get_string("english"): mo.md(text_db["ai-notice"]["english"] + "\n\n\n" + summary), get_string("dutch"): mo.md(text_db["ai-notice"]["dutch"] + "\n\n\n" + translation)})])
     _output
     return
 
