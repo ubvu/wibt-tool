@@ -11,13 +11,15 @@ dependencies = [
   "python-dotenv",
 #  "requests",
   "openai",
-#  "marimo",
+  "marimo",
   "altair",
   "pandas",
   "pyarrow",
   "pydantic",
   "matplotlib",
   "plotly",
+  "markitdown_no_magika",
+  "pypdf",
 #  "docling" # not pytonic
 ]
 
