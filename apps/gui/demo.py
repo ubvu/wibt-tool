@@ -331,7 +331,7 @@ def _(get_string, mo):
 def _(get_string, mo):
     mode = mo.ui.dropdown(
         options={
-            get_string("eco") : 1,
+            get_string("eco") : 3,
             get_string("quality") : 10
         },
         value= get_string("eco"),
