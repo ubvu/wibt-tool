@@ -182,18 +182,7 @@ def _():
         "finished generating summaries" : { "dutch" : "Klaar met samenvattingen genereren", "english" : "Finished generating summaries"},
         "translating" : { "dutch" : "Bezig met vertalen", "english" : "Translating"},
         "finished translating" : { "dutch" : "Klaar met vertalen", "english" : "Finished translating"},
-        "advanced settings" : { 
-            "dutch" : """
-    ## Geavanceerde instellingen
-    Pas hier de api endpoint en de modellen voor de verschillende rollen aan.
-    """, 
-            "english" : """
-    ## Advanced settings
-    You can change the api endpoint and the models for the different roles.
-    """
-        },
-        "api endpoint" : { "dutch" : "API endpoint", "english" : "API endpoint"},
-        "model settings" : { "dutch" : "Model instellingen", "english" : "Model settings"},
+
         "mode" : { "dutch" : "Modus", "english" : "Mode"},
         "eco" : { "dutch" : "eco", "english" : "eco"},
         "quality" : { "dutch" : "kwaliteit", "english" : "quality"},
@@ -234,37 +223,6 @@ def _(get_string, language_option, mo):
 
 
 @app.cell
-def _(default_api_token, default_api_url, mo):
-    def labeled_ui(label_text, input_element, width="350px"):
-        return mo.hstack([
-            mo.Html(f"<div style='width: {width}; font-weight: bold;'>{label_text}</div>"), 
-            input_element
-        ], justify="start")
-
-
-    # Text inputs
-    api_url_form = mo.ui.text(
-        placeholder="https://example.com/v1", 
-        value=default_api_url,
-        kind="url",
-        full_width=True,
-    )
-    api_token_form = mo.ui.text(
-        placeholder="sk-...", 
-        value=default_api_token, 
-        kind="password"
-    )
-
-    print(default_api_url)
-    return api_token_form, api_url_form, labeled_ui
-
-
-@app.cell
-def _():
-    return
-
-
-@app.cell
 def _():
     # model_menu = None
     # _output = None
@@ -293,58 +251,6 @@ def _():
 
 
 @app.cell
-def _(labeled_ui, mo, os, re):
-    def create_model_dropdowns(model_names, model_list):
-        _form_list = []
-        _form_dict = {}
-        for model_name in model_names:
-            val = os.getenv('DEFAULT_' + model_name + '_MODEL', None)
-            temp_val = os.getenv('DEFAULT_' + model_name + '_MODEL_TEMP', None)
-
-            if val is None:
-                match = re.search(r'(\d+)$', model_name)
-                if match:
-                    base_name = model_name[:match.start()]
-                    base_env_key = 'DEFAULT_' + base_name + '_MODEL'
-                    base_list_str = os.getenv(base_env_key)
-                    if base_list_str:
-                        parts = [p.strip() for p in base_list_str.split(',')]
-                        index = int(match.group(1))
-                        if index < len(parts):
-                            val = parts[index]
-
-                        base_temp_key = 'DEFAULT_' + base_name + '_MODEL_TEMP'
-                        base_temp_list_str = os.getenv(base_temp_key)
-                        if base_temp_list_str and temp_val is None:
-                            temp_parts = [t.strip() for t in base_temp_list_str.split(',')]
-                            if index < len(temp_parts):
-                                try:
-                                    temp_val = float(temp_parts[index])
-                                except ValueError:
-                                    temp_val = 0.0
-
-            _form_dict[model_name + "_MODEL"] = mo.ui.dropdown(
-                options=model_list, 
-                value=val,
-                full_width=True
-            )
-            _form = labeled_ui(model_name + "_MODEL", _form_dict[model_name + "_MODEL"] )
-            _form_list += [_form]
-
-            if temp_val is None:
-                temp_val = 0.0
-
-            _form_dict[model_name + "_MODEL_TEMP"] =  mo.ui.slider(start=0,stop=1,step=0.01, show_value=True, value=float(temp_val))
-            _form = labeled_ui(model_name + "_MODEL_TEMP", _form_dict[model_name + "_MODEL_TEMP"])
-            _form_list += [_form]
-
-        return mo.vstack(_form_list), _form_dict
-
-
-    return (create_model_dropdowns,)
-
-
-@app.cell
 def _(
     AgentFactory,
     AppConfig,
@@ -355,15 +261,47 @@ def _(
     context,
     default_api_token,
     default_api_url,
-    model_dict,
+    os,
 ):
+    _model_names = ["SUMMARY", "READ_EVAL", "PREDRAFT", "DRAFT", "REFINE_DRAFT", "PROOFREAD", "DIRECT_TRANSLATION", "FACT_EXTRACTION", "FACT_VALIDATION_0", "FACT_VALIDATION_1", "FACT_VALIDATION_2", "ALIGNMENT", "ADVOCATE", "SKEPTIC", "ADJUDICATOR"]
+
+    model_dict = {}
+    for model_name in _model_names:
+        val = os.getenv('DEFAULT_' + model_name + '_MODEL', None)
+        temp_val = os.getenv('DEFAULT_' + model_name + '_MODEL_TEMP', None)
+
+        if val is None:
+            match = re.search(r'(\d+)$', model_name)
+            if match:
+                base_name = model_name[:match.start()]
+                base_env_key = 'DEFAULT_' + base_name + '_MODEL'
+                base_list_str = os.getenv(base_env_key)
+                if base_list_str:
+                    parts = [p.strip() for p in base_list_str.split(',')]
+                    index = int(match.group(1))
+                    if index < len(parts):
+                        val = parts[index]
+
+                base_temp_key = 'DEFAULT_' + base_name + '_MODEL_TEMP'
+                base_temp_list_str = os.getenv(base_temp_key)
+                if base_temp_list_str and temp_val is None:
+                    temp_parts = [t.strip() for t in base_temp_list_str.split(',')]
+                    if index < len(temp_parts):
+                        try:
+                            temp_val = float(temp_parts[index])
+                        except ValueError:
+                            temp_val = 0.0
+
+        model_dict[model_name + "_MODEL"] = val
+        model_dict[model_name + "_MODEL_TEMP"] = temp_val if temp_val is not None else 0.0
+
     config = AppConfig.from_dict({
         "api_url" : default_api_url, 
         "api_token" : default_api_token,
         "CONTEXT": context.value,
         "REFINEMENT_MODEL": "Not used anymore",
         "REFINEMENT_MODEL_TEMP": 1,
-    } | {model: model_dict[model].value for model in model_dict.keys()}
+    } | {model: model_dict[model] for model in model_dict.keys()}
     )
 
 
@@ -427,81 +365,7 @@ def _(get_string, mo, os):
     return (context,)
 
 
-@app.cell
-def _(get_string, mo):
-    mo.md(get_string("advanced settings"))
-    return
 
-
-@app.cell
-def _():
-    # _model_names = ["SUMMARY", "READ_EVAL", "PREDRAFT", "DRAFT", "REFINE_DRAFT", "PROOFREAD", "DIRECT_TRANSLATION", "FACT_EXTRACTION", "FACT_VALIDATION_0", "FACT_VALIDATION_1", "FACT_VALIDATION_2", "ALIGNMENT", "ADVOCATE", "SKEPTIC", "ADJUDICATOR"]
-
-    # _output = None
-
-    # model_list = []
-    # if api_url:
-    #     client = OpenAI(
-    #     base_url=api_url, 
-    #     api_key=api_token
-    # )
-    #     model_list = []
-    #     _models = client.models.list()
-    #     for model in _models:
-    #         model_list += [model.id]
-    #         print(model.id)
-    #     _output = mo.center(create_model_dropdowns(_model_names, model_list))
-
-    # _output
-    return
-
-
-@app.cell
-def _(
-    OpenAI,
-    api_token_form,
-    api_url_form,
-    create_model_dropdowns,
-    default_api_token,
-    default_api_url,
-    get_string,
-    labeled_ui,
-    mo,
-):
-    _elements = {}
-    _elements[get_string("api endpoint")] = mo.center(
-    mo.vstack([
-        labeled_ui("API Endpoint:", api_url_form),
-        labeled_ui("API Token:", api_token_form),
-    ]))
-
-    _model_names = ["SUMMARY", "READ_EVAL", "PREDRAFT", "DRAFT", "REFINE_DRAFT", "PROOFREAD", "DIRECT_TRANSLATION", "FACT_EXTRACTION", "FACT_VALIDATION_0", "FACT_VALIDATION_1", "FACT_VALIDATION_2", "ALIGNMENT", "ADVOCATE", "SKEPTIC", "ADJUDICATOR"]
-
-    if default_api_url:
-        _client = OpenAI(
-        base_url=default_api_url, 
-        api_key=default_api_token
-    )
-        model_list = []
-        try:
-            _models = _client.models.list()
-            for model in _models:
-                model_list += [model.id]
-                print(model.id)
-            model_forms, model_dict = create_model_dropdowns(_model_names, model_list)
-            _elements[get_string("model settings")] = mo.center(model_forms)
-        except:
-            print("except")
-            _elements[get_string("api endpoint")] = mo.vstack([_elements[get_string("api endpoint")]])
-
-
-    mo.accordion(_elements,multiple=True) 
-
-    # {
-    #      : ,
-    #     get_string("model settings") : mo.md("hey")
-    # }
-    return (model_dict,)
 
 
 @app.cell
