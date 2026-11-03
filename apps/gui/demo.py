@@ -16,6 +16,7 @@ def _():
     import markitdown_no_magika
     import pypdf
     import wibt_tool
+    from pathlib import Path
 
 
     from wibt_tool.config import AppConfig
@@ -37,10 +38,12 @@ def _():
         MarkItDown,
         OpenAI,
         OpenAIClient,
+        Path,
         PdfReader,
         PromptManager,
         SummaryOrchestrator,
         TranslationOrchestrator,
+        base64,
         io,
         mo,
         os,
@@ -61,53 +64,112 @@ def _(os):
 
 @app.cell
 def _():
+    # # load the ai generated disclaimer image
+
+    # encoded_ai_logo = None
+
+    # _notebook_dir = Path(__file__).parent if "__file__" in locals() else Path.cwd()
+    # _image_path = _notebook_dir / "./assets/LABEL_AI GENERATED_black.png"  
+
+
+    # try:
+    #     with open(_image_path, "rb") as _file:
+    #         encoded_ai_logo = base64.b64encode(_file.read()).decode("utf-8")
+    # except FileNotFoundError:
+    #     print(f"Error: Could not find the logo file at {image_path.resolve()}")
+    return
+
+
+@app.cell
+def _(mo, vu_logo):
+    mo.center(mo.md(vu_logo))
+    return
+
+
+@app.cell
+def _(Path, base64):
+    def read_image(image_path):
+        _notebook_dir = Path(__file__).parent if "__file__" in locals() else Path.cwd()
+        _image_path = _notebook_dir / image_path  
+    
+        try:
+            with open(_image_path, "rb") as file:
+                _encoded_image = base64.b64encode(file.read()).decode("utf-8")
+                return _encoded_image
+        except FileNotFoundError:
+            print(f"Error: Could not find the logo file at {image_path.resolve()}")
+
+    return (read_image,)
+
+
+@app.cell
+def _(read_image):
+    vu_logo = None
+    encoded_vu_logo = read_image("./apps/gui/assets/VU-logo-RGB.png")
+    if encoded_vu_logo:
+        vu_logo = f'<img src="data:image/png;base64,{encoded_vu_logo}" alt="EU AI generated Label"  width="256" style="vertical-align: middle; margin: 5px;" /> '
+    return (vu_logo,)
+
+
+@app.cell
+def _(read_image):
+    ai_disclaimer_image = None
+    encoded_ai_logo =  read_image("./apps/gui/assets/LABEL_AI GENERATED_black.png")
+    if encoded_ai_logo:
+        ai_disclaimer_image = f'<img src="data:image/png;base64,{encoded_ai_logo}" alt="EU AI generated Label"  width="256" style="vertical-align: middle; margin: 5px;" /> '
+    return (ai_disclaimer_image,)
+
+
+@app.cell
+def _():
     text_db = {
         "language" : { "dutch" : "Taal", "english" : "Language"},
         "introduction" : { 
             "dutch" : """
     # Wetenschap in Begrijpelijke Taal - Tool
-    Met deze tool kun je van een wetenschappelijk artikel een sammenvatting in begrijpbaar Nederlands laten maken door LLMs.
+    Met deze tool kun je van een wetenschappelijk artikel eenvoudig een samenvatting in begrijpbaar Nederlands laten maken door open-source taalmodellen (LLMs). Deze tool is ontwikkeld aan de Vrije Universiteit Amsterdam in samenwerking met de KB Nationale Bibliotheek. Het systeem is een transparante multi-agent pipeline die is geëvalueerd met zowel eindgebruikers als wetenschappelijke auteurs, met de prioriteit om de feitelijke betrouwbaarheid van het onderzoek te behouden. Let op: deze samenvatting wordt geproduceerd met behulp van AI. Het is automatisch gegenereerd en kan fouten bevatten.
     """, 
                "english" : """
-    # Wetenschap in Begrijpelijke Taal (Science in Comprehensible Language) - Tool
-    With this tool you can create summaries in comprehensible Dutch (and English) from scientific articles with the use of LLMs.
+    # Wetenschap in Begrijpelijke Taal (Science in Understandable Language) - Tool
+    With this tool, you can easily generate a summary of a scientific article in clear and understandable language using open-source large language models (LLMs). This tool was developed at the Vrije Universiteit Amsterdam in collaboration with the KB National Library. The system is a transparent multi-agent pipeline evaluated by both end users and academic authors, prioritizing factuality preservation of the research. Please note: this summary is produced using AI. It is automatically generated and may contain errors. 
     """
         },
         "settings" : { 
             "dutch" : """
     ## Instellingen
-    Je kunt enkele aanpassingen maken in hoe de samenvatting wordt gemaakt. Als je niet weet of je een aanpassing wilt maken, dan zijn de huidige instellingen een goed startpunt.
+    U kunt enkele aanpassingen maken in hoe de samenvatting wordt gemaakt. Als u niet weet of u een aanpassing wilt maken, dan zijn de huidige instellingen een goed startpunt. 
     ### Modus
-    Deze tool genereert verschillende samenvattingen en selecteert vervolgens de beste; daarom ziet u slechts één definitieve samenvatting. Kies uit twee modi: Eco of Kwaliteit. De eco-modus genereert minder samenvattingen, maar verbruikt minder energie en tijd. De kwaliteit-modus genereert meer kandidaten, wat de kans op een beter resultaat vergroot, maar kost meer tijd en energie.
+    Deze tool genereert meerdere samenvattingen en selecteert vervolgens de beste; daarom ziet u slechts één definitieve samenvatting. Kies uit twee modi: Eco of Kwaliteit. De eco-modus genereert minder samenvattingen, maar verbruikt minder energie en tijd. De kwaliteit-modus genereert meer samenvattingskandidaten, wat de kans op een beter resultaat vergroot, maar kost meer tijd en energie. 
     """, 
             "english" : """
     ##Settings
-    You can make a few adjustments to how the summary is generated. If you're not sure whether to change anything, the current settings are a good starting point.
+    You can make adjustments to how the summary is generated. If you are unsure whether you want to make an adjustment, the default settings are a good starting point.
     ###Mode
-    This tool generates several different summaries and then selects the best one; therefore, you will only see a single final summary. Select from two modes: eco or quality. The eco mode generates fewer summaries, but takes less energy and time to generate your summary. The quality mode generates more candidates increasing the chance of a better result, but takes more time and energy.
+    This tool generates multiple summaries and then selects the best one; therefore, you will only see a single final summary. Choose between two modes: Eco or Quality. Eco mode generates fewer summaries, using less energy and time. Quality mode generates more summary candidates, increasing the chance of a better result, but requiring more time and energy. 
     """
         },
         "usage" : { 
             "dutch" : """
     ### Gebruik
-    Deze tool kan samenvattingen maken voor verschillende soorten gebruik. Kies 'beleidsvorming' voor een samenvatting die gericht is op het informeren bij het vormen van (politiek) beleid. Kies 'psychologie' voor een samenvatting die gericht is om psychologen te informeren. Kies 'algemeen' om een samenvatting te genereren die meer algemeen is dan de vorige twee keuzes.
+    Deze tool kan gebruikt worden voor verschillende doeleinden. Kies 'beleidsvorming' voor een samenvatting die gericht is op het informeren bij het vormen van (politiek) beleid. Kies 'psychologie' voor een samenvatting die gericht is om psychologen te informeren. Kies 'algemeen' om een samenvatting te genereren die meer algemeen is dan de vorige twee keuzes.
     """, 
             "english" : """
     ### Usage
-    This tool can create summaries for different purposes. Select 'policy making' for a summary focused on informing the development of (political) policy. Select 'psychology' for a summary designed to inform psychologists. Select 'general' to generate a summary that is more general than the previous two options.
+    This tool can be used for various purposes. Select 'policy making' for a summary focused on informing the development of (political) policy. Select 'psychology' for a summary designed to inform psychologists. Select 'general' to generate a summary that is more general than the previous two options.
     """
         },
         "paper" : { 
             "dutch" : """
     ## Paper
-    Klik op 'upload' om de paper waarvan je een samenvatting wilt te uploaden. Druk vervolgens op 'maak samenvatting' om de samenvatting te laten genereren.
+    Klik op ‘Upload’ om de paper waar u een samenvatting van wilt genereren te uploaden. Druk vervolgens op ‘maak samenvatting’.
     """, 
             "english" : """
     ## Paper
-    Click 'upload' to upload the paper you would like to summarize. Then, press 'create summary' to generate the summary.
+    Click ‘Upload’ to upload the paper you want to summarize. Then press ‘generate summary’.
     """
         },
-        "create summary" : { "dutch" : "maak samenvatting", "english" : "create summary"},
+        "create summary" : { "dutch" : "maak samenvatting", "english" : "generate summary"},
+        "download_summary": { "dutch" : "download samenvatting", "english" : "download summary"},
         "general" : { "dutch" : "algemeen", "english" : "general"},
         "psychology" : { "dutch" : "psychologie", "english" : "psychology"},
         "policy making" : { "dutch" : "beleidsvorming", "english" : "policy making"},
@@ -135,7 +197,17 @@ def _():
         "mode" : { "dutch" : "Modus", "english" : "Mode"},
         "eco" : { "dutch" : "eco", "english" : "eco"},
         "quality" : { "dutch" : "kwaliteit", "english" : "quality"},
-        "ai-notice" : { "dutch" : "Let op: deze text is geproduceerd met behulp van een AI‑taalmodel. Het is automatisch gegenereerd en kan fouten bevatten.", "english" : "Please note that the following content was produced using an AI language model. The output is automatically generated and may contain inaccuracies."},
+        "ai-notice" : { "dutch" : "Let op: deze tekst is geproduceerd met behulp van AI. Het is automatisch gegenereerd en kan fouten bevatten.", "english" : "Please note: this text was produced using AI. It is automatically generated and may contain errors."},
+        "footnote" : {
+            "dutch" : """
+    ## Meer informatie
+    Dit project is een samenwerking tussen de Vrije Universiteit Amsterdam en de KB Nationale Bibliotheek. Wilt u meer weten over de methode of resultaten? Lees dan onze wetenschappelijke publicatie [DOI] of neem contact op via [email].
+    """,
+            "english" : """
+    ## Additional information
+    This project is a collaboration between the Vrije Universiteit Amsterdam and the KB National Library. Would you like to know more about the methodology or results? Read our academic publication [DOI] or contact us at [email].
+    """
+        }
         # "" : { "dutch" : "", "english" : ""},
     }
     return (text_db,)
@@ -169,10 +241,7 @@ def _(default_api_token, default_api_url, mo):
             input_element
         ], justify="start")
 
-    # --- 2. Setup Logic (Environment Variables) ---
-    # _default_api_url and _default_api_token are already set from os.getenv above
 
-    # --- 3. Define the Form Elements ---
     # Text inputs
     api_url_form = mo.ui.text(
         placeholder="https://example.com/v1", 
@@ -243,7 +312,7 @@ def _(labeled_ui, mo, os, re):
                         index = int(match.group(1))
                         if index < len(parts):
                             val = parts[index]
-    
+
                         base_temp_key = 'DEFAULT_' + base_name + '_MODEL_TEMP'
                         base_temp_list_str = os.getenv(base_temp_key)
                         if base_temp_list_str and temp_val is None:
@@ -324,7 +393,7 @@ def _(get_string, mo):
 def _(get_string, mo):
     mode = mo.ui.dropdown(
         options={
-            get_string("eco") : 3,
+            get_string("eco") : 1,
             get_string("quality") : 10
         },
         value= get_string("eco"),
@@ -490,6 +559,7 @@ def _():
 
 @app.cell
 async def _(
+    ai_disclaimer_image,
     context,
     get_string,
     mo,
@@ -522,8 +592,54 @@ async def _(
                     summary=summary, 
                     translation_ctx=_context
                 )
-        _output = mo.vstack([mo.md(get_string("summaries")), mo.accordion({ get_string("english"): mo.md(text_db["ai-notice"]["english"] + "\n\n\n" + summary), get_string("dutch"): mo.md(text_db["ai-notice"]["dutch"] + "\n\n\n" + translation)})])
+
+        _english_text = ai_disclaimer_image + "\n" + text_db["ai-notice"]["english"] + "\n\n\n" + summary
+        _dutch_text = ai_disclaimer_image + "\n" + text_db["ai-notice"]["dutch"] + "\n\n\n" + translation
+
+
+
+        download_dutch = mo.download(
+            data=_dutch_text.encode("utf-8"),
+            filename="samenvatting.md",
+            label=get_string("download_summary"),
+            mimetype="text/markdown",
+        )
+
+        download_english = mo.download(
+            data=_english_text.encode("utf-8"),
+            filename="summary.md",
+            label=get_string("download_summary"),
+            mimetype="text/markdown",
+        )
+
+        _output = mo.vstack(
+            [
+                mo.md(get_string("summaries")), 
+                mo.accordion(
+                    {
+                        get_string("english"): mo.vstack(
+                            [
+                                mo.md(_english_text),
+                                download_english
+                            ]
+                        ), 
+                        get_string("dutch"): mo.vstack(
+                            [
+                                mo.md(_dutch_text),
+                                download_dutch
+                            ]
+                        ) 
+                    }
+                )
+            ]
+        )
     _output
+    return
+
+
+@app.cell
+def _(get_string, mo):
+    mo.md(get_string("footnote"))
     return
 
 
