@@ -36,7 +36,6 @@ def _():
         AgentFactory,
         AppConfig,
         MarkItDown,
-        OpenAI,
         OpenAIClient,
         Path,
         PdfReader,
@@ -91,7 +90,7 @@ def _(Path, base64):
     def read_image(image_path):
         _notebook_dir = Path(__file__).parent if "__file__" in locals() else Path.cwd()
         _image_path = _notebook_dir / image_path  
-    
+
         try:
             with open(_image_path, "rb") as file:
                 _encoded_image = base64.b64encode(file.read()).decode("utf-8")
@@ -262,6 +261,7 @@ def _(
     default_api_token,
     default_api_url,
     os,
+    re,
 ):
     _model_names = ["SUMMARY", "READ_EVAL", "PREDRAFT", "DRAFT", "REFINE_DRAFT", "PROOFREAD", "DIRECT_TRANSLATION", "FACT_EXTRACTION", "FACT_VALIDATION_0", "FACT_VALIDATION_1", "FACT_VALIDATION_2", "ALIGNMENT", "ADVOCATE", "SKEPTIC", "ADJUDICATOR"]
 
@@ -358,14 +358,10 @@ def _(get_string, mo, os):
             get_string("psychology") : "psychology",
             get_string("policy making") : "tweede-kamer"
         },
-        value= get_string("general") # TODO change
-        # _default_context if _default_context in ["general", "psychology", "tweede-kamer"] else "general"
+        value= get_string(_default_context)
     )
     context
     return (context,)
-
-
-
 
 
 @app.cell
